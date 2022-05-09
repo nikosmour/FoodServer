@@ -2,11 +2,11 @@
 
 namespace App\Enum;
 
-use App\Traits\EnumToArray;
+use App\Traits\EnumToArrayTrait;
 
 enum UserStatusEnum: string
 {
-    use EnumToArray;
+    use EnumToArrayTrait;
 
     case UNDERGRADUATE = 'undergraduate';
     case POSTGRADUATE = 'postgraduate';

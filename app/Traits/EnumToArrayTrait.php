@@ -7,7 +7,7 @@ namespace App\Traits;
 use Illuminate\Support\Collection;
 use UnitEnum;
 
-trait EnumToArray
+trait EnumToArrayTrait
 {
 //    use Values, Names;
     /**

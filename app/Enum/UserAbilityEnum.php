@@ -2,11 +2,11 @@
 
 namespace App\Enum;
 
-use App\Traits\EnumToArray;
+use App\Traits\EnumToArrayTrait;
 
 enum UserAbilityEnum: string
 {
-    use EnumToArray;
+    use EnumToArrayTrait;
 
     case COUPON_OWNERSHIP = 'coupon ownership';
     case COUPON_SELL = 'coupon sell';
