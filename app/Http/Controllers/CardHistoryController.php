@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\CardApplicant;
+use App\Enum\UserAbilityEnum;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\Request;
@@ -14,7 +14,7 @@ class CardHistoryController extends Controller
     public function __construct()
     {
         $this->middleware('auth:academics');
-        $this->middleware('can:all,' . CardApplicant::class);
+        $this->middleware('ability:' . UserAbilityEnum::CARD_OWNERSHIP->name);;
     }
 
     /**

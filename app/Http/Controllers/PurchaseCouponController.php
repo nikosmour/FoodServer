@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enum\UserAbilityEnum;
 use App\Http\Requests\StorePurchaseCouponRequest;
 use App\Traits\PurchaseCouponTrait;
 use Illuminate\Contracts\Foundation\Application;
@@ -17,6 +18,8 @@ class PurchaseCouponController extends Controller
     public function __construct()
     {
         $this->middleware('auth:couponStaffs');
+        $this->middleware('ability:' . UserAbilityEnum::COUPON_SELL->name);
+
 
     }
 

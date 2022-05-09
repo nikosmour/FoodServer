@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enum\UserAbilityEnum;
 use App\Http\Requests\StoreEntryCheckingRequest;
 use App\Traits\EntryCheckingTrait;
 use Illuminate\Contracts\Foundation\Application;
@@ -17,6 +18,8 @@ class EntryCheckingController extends Controller
     public function __construct()
     {
         $this->middleware('auth:entryStaffs');
+        $this->middleware('ability:' . UserAbilityEnum::ENTRY_CHECK->name);
+
 
     }
 

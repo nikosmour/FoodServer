@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enum\UserAbilityEnum;
 use App\Http\Requests\StoreTransferCouponRequest;
 use App\Models\TransferCoupon;
 use App\Traits\CouponOwnerTrait;
@@ -19,6 +20,8 @@ class TransferCouponController extends Controller
     public function __construct()
     {
         $this->middleware('auth:academics');
+        $this->middleware('ability:' . UserAbilityEnum::COUPON_OWNERSHIP->name);
+
     }
 
     /**

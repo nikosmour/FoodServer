@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enum\MealPlanPeriodEnum;
+use App\Enum\UserAbilityEnum;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\Request;
@@ -15,6 +16,8 @@ class CouponOwnerController extends Controller
     public function __construct()
     {
         $this->middleware('auth:academics');
+        $this->middleware('ability:' . UserAbilityEnum::COUPON_OWNERSHIP->name);
+
     }
 
     /**
