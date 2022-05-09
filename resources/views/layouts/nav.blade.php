@@ -37,11 +37,11 @@
                 </a>
             </div>
         </li>
-    @elseauth('entryStaff')
+    @elseauth('entryStaffs')
         <li class="nav-item {{ Route::is('entryChecking.create') ? 'active' : '' }}">
             <a class="nav-link " href="{{ route('entryChecking.create')}}">{{ __('entryChecking.create') }}</a>
         </li>
-    @elseauth('couponStaff')
+    @elseauth('couponStaffs')
         <li class="nav-item {{ Route::is('coupons.purchase.create') ? 'active' : '' }}">
             <a class="nav-link " href="{{ route('coupons.purchase.create')}}">{{ __('coupons.purchase.create') }}</a>
         </li>

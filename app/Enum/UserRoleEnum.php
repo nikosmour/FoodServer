@@ -2,11 +2,11 @@
 
 namespace App\Enum;
 
-use App\Traits\EnumToArray;
+use App\Traits\EnumToArrayTrait;
 
 enum UserRoleEnum: string
 {
-    use EnumToArray;
+    use EnumToArrayTrait;
 
     case STUDENT = 'student';
     case RESEARCHER = 'researcher';

@@ -2,11 +2,11 @@
 
 namespace App\Enum;
 
-use App\Traits\EnumToArray;
+use App\Traits\EnumToArrayTrait;
 
 enum CardStatusEnum: string
 {
-    use EnumToArray;
+    use EnumToArrayTrait;
 
     case TEMPORARY_SAVED = 'temporary saved';
     case SUBMITTED = 'submitted';
