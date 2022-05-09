@@ -2,11 +2,13 @@
 
 namespace App\Enum;
 
-use App\Traits\EnumToArrayTrait;
+use App\Interfaces\Ability;
+use App\Interfaces\Enum;
+use App\Traits\Enums\EnumTrait;
 
-enum UserAbilityEnum: string
+enum UserAbilityEnum: string implements Enum, Ability
 {
-    use EnumToArrayTrait;
+    use EnumTrait;
 
     case COUPON_OWNERSHIP = 'coupon ownership';
     case COUPON_SELL = 'coupon sell';
@@ -14,22 +16,4 @@ enum UserAbilityEnum: string
     case CARD_OWNERSHIP = 'card ownership';
     case DAILY_MEAL_PLAN_CREATE = 'daily meal plan create';
     case ENTRY_CHECK = 'entry check';
-
-    /**
-     * @return array of UserRoleEnum
-     * return an array of UserRoleEnum that have this ability
-     */
-    public function whoHas(): array
-    {
-        return match ($this) {
-            UserAbilityEnum::COUPON_OWNERSHIP => [UserRoleEnum::RESEARCHER,UserRoleEnum::STUDENT],
-            UserAbilityEnum::COUPON_SELL => [UserRoleEnum::STAFF_COUPON],
-            UserAbilityEnum::CARD_APPLICATION_CHECK => [UserRoleEnum::STAFF_CARD],
-            UserAbilityEnum::CARD_OWNERSHIP => [UserRoleEnum::STUDENT],
-            UserAbilityEnum::DAILY_MEAL_PLAN_CREATE => [UserRoleEnum::STAFF_COUPON,UserRoleEnum::STAFF_ENTRY],
-            UserAbilityEnum::ENTRY_CHECK => [UserRoleEnum::STAFF_ENTRY],
-
-        };
-    }
-
 }

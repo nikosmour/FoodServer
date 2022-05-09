@@ -5,7 +5,6 @@ namespace App\Models;
 use App\Enum\UserAbilityEnum;
 use App\Enum\UserStatusEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -45,10 +44,16 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'status' => UserStatusEnum::class,
     ];
+
+    /**
+     * @param UserAbilityEnum $ability
+     * @return bool
+     */
     public function hasAbility(UserAbilityEnum $ability): bool
     {
-        return $this->status->hasAbility($ability);
+        return $this->status->can($ability);
     }
+
     /**
      * check if the instance has an ability
      * @param UserAbilityEnum[] $abilities
@@ -56,6 +61,6 @@ class User extends Authenticatable
      */
     public function hasAnyAbility(array $abilities): bool
     {
-        return $this->status->hasAnyAbility($abilities);
+        return $this->status->canAny($abilities);
     }
 }

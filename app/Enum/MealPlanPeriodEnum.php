@@ -2,11 +2,12 @@
 
 namespace App\Enum;
 
-use App\Traits\EnumToArrayTrait;
+use App\Interfaces\Enum;
+use App\Traits\Enums\EnumTrait;
 
-enum MealPlanPeriodEnum: string
+enum MealPlanPeriodEnum: string implements Enum
 {
-    use EnumToArrayTrait;
+    use EnumTrait;
 
     case BREAKFAST = 'breakfast';
     case LUNCH = 'lunch';

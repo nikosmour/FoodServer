@@ -2,11 +2,12 @@
 
 namespace App\Enum;
 
-use App\Traits\EnumToArrayTrait;
+use App\Interfaces\Enum;
+use App\Traits\Enums\EnumTrait;
 
-enum CardDocumentStatusEnum: string
+enum CardDocumentStatusEnum: string implements Enum
 {
-    use EnumToArrayTrait;
+    use EnumTrait;
 
     case SUBMITTED = 'submitted';
     case ACCEPTED = 'accepted';

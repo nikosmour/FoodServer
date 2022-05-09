@@ -2,11 +2,15 @@
 
 namespace App\Enum;
 
-use App\Traits\EnumToArrayTrait;
+use App\Interfaces\Ability;
+use App\Interfaces\Enum;
+use App\Interfaces\HasAbilities;
+use App\Traits\Enums\EnumTrait;
+use App\Traits\Enums\HasAbilitiesTrait;
 
-enum UserStatusEnum: string
+enum UserStatusEnum: string implements Enum, HasAbilities
 {
-    use EnumToArrayTrait;
+    use EnumTrait, HasAbilitiesTrait;
 
     case UNDERGRADUATE = 'undergraduate';
     case POSTGRADUATE = 'postgraduate';
@@ -54,27 +58,14 @@ enum UserStatusEnum: string
         };
     }
 
-    /**
-     * determine if the user status has the specific $ability
-     * @param UserAbilityEnum $ability
-     * @return bool
-     */
-    public function hasAbility(UserAbilityEnum $ability): bool
+    public function can(Ability $ability): bool
     {
-        return $this->hasAnyRole($ability->whoHas());
-    }
-    /**
-     * determine if the user status has any of the specifics $abilities
-     * @param UserAbilityEnum[] $abilities
-     * @return bool
-     */
-    public function hasAnyAbility(array $abilities): bool
-    {
-        foreach ($abilities as $ability)
-            if($this->hasAbility($ability))
-                return true;
-        return false;
+        return $this->role()->can($ability);
     }
 
 
+    public function getAbilities(): Ability|array|null
+    {
+        return $this->role()->getAbilities();
+    }
 }

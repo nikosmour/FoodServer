@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Traits;
+namespace App\Traits\Enums;
 
-use BackedEnum;
 use Illuminate\Support\Collection;
 
-trait EnumToArrayTrait
+trait EnumTrait
 {
     /**
      * @return array <string,int|string>
@@ -41,15 +40,15 @@ trait EnumToArrayTrait
 
     /**
      * @param string $name
-     * @return BackedEnum
+     * @return static
      */
-    public static function fromName(string $name): BackedEnum
+    public static function fromName(string $name): static
     {
         return self::enumByName()[$name];
     }
 
     /**
-     * @return array <string,UnitEnum>
+     * @return array <string,Enum>
      */
     public static function enumByName(): array
     {
@@ -57,7 +56,7 @@ trait EnumToArrayTrait
     }
 
     /**
-     * @return array <int|string,UnitEnum>
+     * @return array <int|string,Enum>
      */
     public static function enumByValue(): array
     {

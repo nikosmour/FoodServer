@@ -2,15 +2,35 @@
 
 namespace App\Enum;
 
-use App\Traits\EnumToArrayTrait;
+use App\Interfaces\Ability;
+use App\Interfaces\Enum;
+use App\Interfaces\HasAbilities;
+use App\Traits\Enums\EnumTrait;
+use App\Traits\Enums\HasAbilitiesTrait;
 
-enum UserRoleEnum: string
+enum UserRoleEnum: string implements Enum, HasAbilities
 {
-    use EnumToArrayTrait;
+    use EnumTrait, HasAbilitiesTrait;
 
     case STUDENT = 'student';
     case RESEARCHER = 'researcher';
     case STAFF_COUPON = 'staff coupon';
     case STAFF_CARD = 'staff card application';
     case STAFF_ENTRY = 'staff entry';
+
+    public function can(Ability $ability): bool
+    {
+        return in_array($this, $this->getAbilities());
+    }
+
+    public function getAbilities(): array
+    {
+        return match ($this) {
+            UserRoleEnum::STUDENT => [UserAbilityEnum::COUPON_OWNERSHIP, UserAbilityEnum::CARD_OWNERSHIP],
+            UserRoleEnum::RESEARCHER => [UserAbilityEnum::COUPON_OWNERSHIP],
+            UserRoleEnum::STAFF_COUPON => [UserAbilityEnum::COUPON_SELL, UserAbilityEnum::DAILY_MEAL_PLAN_CREATE],
+            UserRoleEnum::STAFF_ENTRY => [UserAbilityEnum::ENTRY_CHECK, UserAbilityEnum::DAILY_MEAL_PLAN_CREATE],
+            UserRoleEnum::STAFF_CARD => [UserAbilityEnum::CARD_APPLICATION_CHECK]
+        };
+    }
 }
