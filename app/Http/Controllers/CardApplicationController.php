@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enum\UserAbilityEnum;
 use App\Http\Requests\StoreCardApplicationRequest;
 use App\Http\Requests\UpdateCardApplicationRequest;
 use App\Models\CardApplication;
@@ -12,7 +13,8 @@ class CardApplicationController extends Controller
     public function __construct()
     {
         $this->middleware('auth:academics');
-        $this->middleware('can:all,' . CardApplication::class);
+        $this->middleware('ability:' . UserAbilityEnum::CARD_OWNERSHIP->name);
+
     }
 
     /**

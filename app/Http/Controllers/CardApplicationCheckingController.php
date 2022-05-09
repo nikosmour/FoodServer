@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enum\UserAbilityEnum;
 use App\Http\Requests\StoreCardApplicationCheckingRequest;
 use App\Http\Requests\UpdateCardApplicationCheckingRequest;
 use App\Models\CardApplicationChecking;
@@ -12,6 +13,7 @@ class CardApplicationCheckingController extends Controller
     public function __construct()
     {
         $this->middleware('auth:cardApplicationStaffs');
+        $this->middleware('ability:' . UserAbilityEnum::CARD_APPLICATION_CHECK->name);
     }
 
     /**

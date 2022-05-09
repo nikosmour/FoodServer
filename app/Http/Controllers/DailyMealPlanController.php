@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enum\MealCategoryEnum;
 use App\Enum\MealPlanPeriodEnum;
+use App\Enum\UserAbilityEnum;
 use App\Http\Requests\StoreDailyMealPlanRequest;
 use App\Http\Requests\UpdateDailyMealPlanRequest;
 use App\Models\DailyMealPlan;
@@ -22,6 +23,7 @@ class DailyMealPlanController extends Controller
     public function __construct()
     {
         $this->middleware('auth:entryStaffs,couponStaffs')->except(['index', 'show']);
+        $this->middleware('ability:' . UserAbilityEnum::DAILY_MEAL_PLAN_CREATE->name)->except(['index', 'show']);
         $this->authorizeResource(DailyMealPlan::class, 'dailyMealPlan');
     }
 
