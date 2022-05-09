@@ -20,7 +20,7 @@ enum UserRoleEnum: string implements Enum, HasAbilities
 
     public function can(Ability $ability): bool
     {
-        return in_array($this, $this->getAbilities());
+        return in_array($ability, $this->getAbilities());
     }
 
     public function getAbilities(): array

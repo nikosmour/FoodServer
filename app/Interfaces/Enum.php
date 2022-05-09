@@ -3,9 +3,8 @@
 namespace App\Interfaces;
 
 use Illuminate\Support\Collection;
-use StringBackedEnum;
 
-interface Enum extends StringBackedEnum
+interface Enum
 {
     /**
      * @return array <string,int|string>
