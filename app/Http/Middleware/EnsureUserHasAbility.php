@@ -18,7 +18,7 @@ class EnsureUserHasAbility
      */
     public function handle(Request $request, Closure $next, string $abilityName): mixed
     {
-        abort_if(!$request->user()->hasAbility(UserAbilityEnum::getEnumByName($abilityName)), 403, 'you don\'t have the ability to access this service');
+        abort_if(!$request->user()->hasAbility(UserAbilityEnum::fromName($abilityName)), 403, 'you don\'t have the ability to access this service');
 
         return $next($request);
     }

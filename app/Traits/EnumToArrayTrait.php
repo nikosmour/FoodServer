@@ -2,8 +2,8 @@
 
 namespace App\Traits;
 
+use BackedEnum;
 use Illuminate\Support\Collection;
-use UnitEnum;
 
 trait EnumToArrayTrait
 {
@@ -41,9 +41,9 @@ trait EnumToArrayTrait
 
     /**
      * @param string $name
-     * @return UnitEnum
+     * @return BackedEnum
      */
-    public static function getEnumByName(string $name): UnitEnum
+    public static function fromName(string $name): BackedEnum
     {
         return self::enumByName()[$name];
     }
@@ -54,15 +54,6 @@ trait EnumToArrayTrait
     public static function enumByName(): array
     {
         return array_combine(self::names()->toArray(), self::cases());
-    }
-
-    /**
-     * @param int|string $value
-     * @return UnitEnum
-     */
-    public static function getEnumByValue(int|string $value): UnitEnum
-    {
-        return self::enumByValue()[$value];
     }
 
     /**
