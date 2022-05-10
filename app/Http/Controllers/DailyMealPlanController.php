@@ -24,7 +24,6 @@ class DailyMealPlanController extends Controller
     {
         $this->middleware('auth:entryStaffs,couponStaffs')->except(['index', 'show']);
         $this->middleware('ability:' . UserAbilityEnum::DAILY_MEAL_PLAN_CREATE->name)->except(['index', 'show']);
-        $this->authorizeResource(DailyMealPlan::class, 'dailyMealPlan');
     }
 
     /**
