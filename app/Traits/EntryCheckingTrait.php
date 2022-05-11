@@ -3,7 +3,7 @@
 namespace App\Traits;
 
 use App\Enum\MealPlanPeriodEnum;
-use App\Models\CardApplicant;
+use App\Models\CardApplication;
 use App\Models\CouponOwner;
 use App\Models\UsageCard;
 use App\Models\UsageCoupon;
@@ -30,7 +30,7 @@ trait EntryCheckingTrait
                 return ['pass' => true,
                     'passWith' => 'card'];
             else
-                $json += ['card' => ['message' => 'expired card']];
+                $json += ['card' => ['message' => 'expired or not exist card ']];
         } catch (ModelNotFoundException) {
             $json += ['card' => ['message' => 'not have a card']];
         } catch (QueryException $e) {
@@ -55,6 +55,7 @@ trait EntryCheckingTrait
             return $json + ['coupon' => $e];
         } catch (Throwable $e) {
             return $json + ['coupon' => $e];
+
         }
     }
 
@@ -68,8 +69,9 @@ trait EntryCheckingTrait
      */
     private function canPassAsCardApplicant(array $data): bool
     {
-        $cardApplicant = CardApplicant::findOrFail($data['academic_id']);
-        if ($cardApplicant->expiration_date < now())
+
+        $cardApplications = CardApplication::whereAcademicId($data['academic_id'])->where('expiration_date', '>=', now()->toDateString())->first();
+        if (is_null($cardApplications))
             return false;
         UsageCard::create($data);
         return true;
