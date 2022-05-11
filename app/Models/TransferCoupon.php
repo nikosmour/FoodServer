@@ -27,7 +27,7 @@ class TransferCoupon extends Pivot
          */
             function ($model) {
                 if ($model->isClean('sender_id'))
-                    $model->sender_id = auth()->user()->academic->academic_id;
+                    $model->sender_id = auth()->user()->academic_id;
                 CouponOwner::addCoupons($model['receiver_id'], $model->attributes);
                 CouponOwner::removeCoupons($model['sender_id'], $model->attributes);
             });

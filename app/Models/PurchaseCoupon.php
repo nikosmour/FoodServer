@@ -28,7 +28,7 @@ class PurchaseCoupon extends Model
          */
             function ($model) {
                 if ($model->isClean('coupon_staff_id'))
-                    /** @noinspection PhpUndefinedFieldInspection */ $model->coupon_staff_id = auth()->user()->couponStaff->id;
+                    /** @noinspection PhpUndefinedFieldInspection */ $model->coupon_staff_id = auth()->user()->id;
                 CouponOwner::addCoupons($model['academic_id'], $model->attributes);
             });
     }
