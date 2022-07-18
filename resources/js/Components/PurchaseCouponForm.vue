@@ -64,17 +64,16 @@
 
                 let thiss = this;
                 if (confirm("Αγορά κουπονιών απο τον χρήστη με ακαδημαϊκή ταυτότητα: " + this.form_data.academic_id +
-                    " Πρωινά: " + this.form_data.breakfast + " Γευμα: " + this.form_data.lunch + " Δείπνο: " + this.form_data.dinner))
-                    axios.post(this.url,this.form_data
+                    " Πρωινά: " + this.form_data.BREAKFAST + " Γευμα: " + this.form_data.LUNCH + " Δείπνο: " + this.form_data.DINNER))
+                    axios.post(this.url, this.form_data
                     ).then(function (responseJson) {
-                        let json=responseJson['data'];
-                        thiss.success= json['sold'];
-                        if(json['sold']) {
+                        let json = responseJson['data'];
+                        thiss.success = json['sold'];
+                        if (json['sold']) {
                             thiss.result = "Επιτυχής πώληση";
-                            thiss.$emit('newPurchase',thiss.form_data);
-                        }
-                        else
-                            thiss.result=json;
+                            thiss.$emit('newPurchase', thiss.form_data);
+                        } else
+                            thiss.result = json;
                     }).catch(function (errors) {
                         thiss.success = false;
                         console.log(errors)
