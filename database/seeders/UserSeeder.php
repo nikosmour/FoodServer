@@ -32,7 +32,9 @@ class UserSeeder extends Seeder
                 if ($user_status->can(UserAbilityEnum::COUPON_OWNERSHIP))
                     \App\Models\CouponOwner::factory()->for($academic)->create();
             } elseif ($user_status->can(UserAbilityEnum::COUPON_SELL))
-                \App\Models\CouponStaff::factory()->create();
+                \App\Models\CouponStaff::factory()->create([
+                    'status' => $user_status->value
+                ]);
             elseif ($user_status->can(UserAbilityEnum::CARD_APPLICATION_CHECK))
                 \App\Models\CardApplicationStaff::factory()->create([
                     'status' => $user_status->value
