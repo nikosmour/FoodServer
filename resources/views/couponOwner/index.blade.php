@@ -54,7 +54,7 @@
                                         </td>
                                     <td>{{ $temp->money}} €</td>
                                     @foreach(\App\Enum\MealPlanPeriodEnum::toArray() as $meal=>$value)
-                                        <td>{{$temp[$meal]}}{{($temp[$meal]-=($value==$transaction->academic_id)?1:0)?'':''}}</td>
+                                        <td>{{$temp[$meal]}}{{($temp[$meal]+=($value==$transaction->academic_id)?1:0)?'':''}}</td>
                                     @endforeach
                                     @endif
                                     <td>{{$transaction->created_at}}</td>

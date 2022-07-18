@@ -28,7 +28,7 @@ class CouponOwnerController extends Controller
      */
     public function __invoke(Request $request): Application|Factory|\Illuminate\Contracts\View\View|View
     {
-        $couponOwner = Auth::user();
+        $couponOwner = Auth::user()->couponOwner;
         $sending = $couponOwner->sendingCoupon()->select(DB::raw('"sending" as transaction, receiver_id as academic_id,0 as money'), 'created_at', ...MealPlanPeriodEnum::names());
         $receiving = $couponOwner->receivingCoupon()->select(DB::raw(' "receiving" as transaction,sender_id as academic_id,0 as money'), 'created_at', ...MealPlanPeriodEnum::names());
         $buying = $couponOwner->purchaseCoupon()->select(DB::raw(' "buying" as transaction,0 as academic_id,money/100 as money'), 'created_at', ...MealPlanPeriodEnum::names());
