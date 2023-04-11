@@ -21,7 +21,7 @@ class CardApplicationFactory extends Factory
     {
         return [
             'expiration_date' => $this->faker->dateTimeBetween('-1 years', '+1 years'),
-            'status' => CardStatusEnum::values()->random(),
+            'status' => CardStatusEnum::random(),
         ];
     }
 }

@@ -18,7 +18,7 @@ class MealFactory extends Factory
     public function definition()
     {
         return [
-            'category' => MealCategoryEnum::values()->random(),
+            'category' => MealCategoryEnum::random(),
             'description' => 'fake' . now()->toDateTimeString(),
         ];
     }

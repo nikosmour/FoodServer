@@ -2,6 +2,7 @@
 
 namespace App\Traits\Enums;
 
+use App\Interfaces\Enum;
 use Illuminate\Support\Collection;
 
 trait EnumTrait
@@ -61,5 +62,13 @@ trait EnumTrait
     public static function enumByValue(): array
     {
         return array_combine(self::values()->toArray(), self::cases());
+    }
+
+    /**
+     * @return Enum
+     */
+    public static function random(): Enum
+    {
+        return collect(self::cases())->random();
     }
 }

@@ -41,4 +41,9 @@ interface Enum
      * @return array <int|string,Enum>
      */
     public static function enumByValue(): array;
+
+    /**
+     * @return Enum
+     */
+    public static function random(): Enum;
 }

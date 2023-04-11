@@ -19,7 +19,7 @@ class UsageCardFactory extends Factory
     {
         return [
             'date' => $this->faker->date(),
-            'period' => MealPlanPeriodEnum::values()->random(),
+            'period' => MealPlanPeriodEnum::random(),
             'time' => $this->faker->time(),
         ];
     }

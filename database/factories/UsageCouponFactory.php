@@ -18,7 +18,7 @@ class UsageCouponFactory extends Factory
     public function definition()
     {
         return [
-            'period' => MealPlanPeriodEnum::values()->random(),
+            'period' => MealPlanPeriodEnum::random(),
         ];
     }
 }
