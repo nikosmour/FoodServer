@@ -25,7 +25,7 @@ class StoreEntryCheckingRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'academic_id'=>'required|integer|min:1'
+            'academic_id'=>["required", "integer", "exists:coupon_owners,academic_id"]
             ];
     }
 
