@@ -25,4 +25,22 @@ class AddressFactory extends Factory
             'phone' => $this->faker->e164PhoneNumber(),
         ];
     }
+    public function permanent(): Factory
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'is_permanent' => true,
+                'location'=> $this->faker->address(),
+            ];
+        });
+    }
+    public function notPermanent(): Factory
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'is_permanent' => false,
+                'location'=> $this->faker->streetAddress(),
+            ];
+        });
+    }
 }

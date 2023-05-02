@@ -49,6 +49,7 @@ class UserSeeder extends Seeder
             PurchaseCouponSeeder::class,
             UsageCardSeeder::class,
             UsageCouponSeeder::class,
+            CardApplicantSeeder::class,
         ]);
     }
 }
