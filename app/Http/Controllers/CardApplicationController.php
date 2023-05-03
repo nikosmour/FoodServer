@@ -7,6 +7,7 @@ use App\Http\Requests\StoreCardApplicationRequest;
 use App\Http\Requests\UpdateCardApplicationRequest;
 use App\Models\CardApplication;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 
 class CardApplicationController extends Controller
 {
@@ -24,7 +25,11 @@ class CardApplicationController extends Controller
      */
     public function index()
     {
-        //
+        $user = Auth::user();
+        $user->cardApplicant->address;
+        $models = [$user];
+        $caption = 'User info';
+        return view('cardApplicant/index', compact('models', 'caption'));
     }
 
     /**
@@ -45,7 +50,11 @@ class CardApplicationController extends Controller
      */
     public function store(StoreCardApplicationRequest $request)
     {
-        //
+        $cardApplication= new CardApplication();
+        $cardApplication->academic_id= Auth::user()->cardApplicant->academic_id;
+        $cardApplication->expiration_date= date('Y-m-d', strtotime('-1 day'));
+        $cardApplication->save();
+        return redirect(route('cardApplication.show', compact("cardApplication")));
     }
 
     /**
@@ -56,7 +65,7 @@ class CardApplicationController extends Controller
      */
     public function show(CardApplication $cardApplication)
     {
-        //
+        dd($cardApplication);
     }
 
     /**

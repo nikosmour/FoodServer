@@ -19,6 +19,7 @@ return new class extends Migration {
             $table->char('location', 99);
             $table->unsignedBigInteger('phone');
             $table->foreign('academic_id')->references('academic_id')->on('card_applicants')->onDelete('cascade')->onUpdate('cascade');
+            $table->timestamps();
         });
     }
 

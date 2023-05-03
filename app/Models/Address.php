@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 class Address extends Model
 {
     use HasFactory;
-    public $timestamps = false;
+    #public $timestamps = false;
     public function cardApplicant()
     {
         return $this->belongsTo(CardApplicant::class,'academic_id');
