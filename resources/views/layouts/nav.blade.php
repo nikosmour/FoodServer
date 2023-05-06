@@ -15,7 +15,7 @@
                 <a class="dropdown-item" href="{{route('card.history')}}">
                     {{ __('student.nav.History') }}
                 </a>
-                <a class="dropdown-item" href="#">
+                <a class="dropdown-item" href="{{route('cardApplication.index')}}">
                     {{ __('student.nav.Request') }}
                 </a>
             </div>
