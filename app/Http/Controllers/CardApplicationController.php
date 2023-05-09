@@ -76,7 +76,8 @@ class CardApplicationController extends Controller
      */
     public function edit(CardApplication $cardApplication)
     {
-        //
+        return view('cardApplication/edit', compact('cardApplication'));
+
     }
 
     /**
@@ -84,11 +85,21 @@ class CardApplicationController extends Controller
      *
      * @param UpdateCardApplicationRequest $request
      * @param CardApplication $cardApplication
-     * @return Response
+     * @return array
      */
     public function update(UpdateCardApplicationRequest $request, CardApplication $cardApplication)
     {
-        //
+
+        if ($request->has('files'))
+            $files = $request->file('files');
+        else
+            return ['success'=>false,'message'=>'there isn\'t files'];
+
+        foreach ($files as $index => $file) {
+            $filename = $file->getClientOriginalName();
+            $file->storeAs('uploads/general/'."$cardApplication->academic_id", $filename);
+        }
+        return ['success'=>true,'message'=>'Files uploaded successfully!'];
     }
 
     /**
