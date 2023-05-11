@@ -2,15 +2,28 @@
 
 namespace App\Http\Controllers;
 
+use App\Enum\CardDocumentStatusEnum;
+use App\Enum\CardStatusEnum;
 use App\Enum\UserAbilityEnum;
 use App\Http\Requests\StoreCardApplicationRequest;
 use App\Http\Requests\UpdateCardApplicationRequest;
 use App\Models\CardApplication;
+use App\Models\CardApplicationDocument;
+use App\Traits\DocumentTrait;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
+use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use function PHPUnit\Framework\isNull;
 
 class CardApplicationController extends Controller
 {
+    use DocumentTrait;
     public function __construct()
     {
         $this->middleware('auth:academics');
@@ -18,18 +31,21 @@ class CardApplicationController extends Controller
 
     }
 
+
     /**
-     * Display a listing of the resource.
-     *
-     * @return Response
+     * @return Application|Factory|View|RedirectResponse|Redirector
      */
     public function index()
     {
         $user = Auth::user();
+        if($user->cardApplicant->currentCardApplication()->count() > 0)
+            return redirect(route('cardApplication.show', [
+                "cardApplication"=>$user->cardApplicant->currentCardApplication
+            ]));
         $user->cardApplicant->address;
         $models = [$user];
         $caption = 'User info';
-        return view('cardApplicant/index', compact('models', 'caption'));
+        return view('cardApplication/index', compact('models', 'caption'));
     }
 
     /**
@@ -42,11 +58,10 @@ class CardApplicationController extends Controller
         //
     }
 
+
     /**
-     * Store a newly created resource in storage.
-     *
      * @param StoreCardApplicationRequest $request
-     * @return Response
+     * @return Application|RedirectResponse|Redirector
      */
     public function store(StoreCardApplicationRequest $request)
     {
@@ -72,11 +87,16 @@ class CardApplicationController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param CardApplication $cardApplication
-     * @return Response
+     * @return array|Application|Factory|View
      */
     public function edit(CardApplication $cardApplication)
     {
-        return view('cardApplication/edit', compact('cardApplication'));
+        if (Auth::user()->getAttribute('academic_id')!=$cardApplication->academic_id)
+            abort(403, 'Unauthorized Access');
+        $files = $cardApplication->cardApplicationDocument()->get(['id','description']);
+
+
+        return view('cardApplication/edit', compact('cardApplication','files'));
 
     }
 
@@ -86,20 +106,22 @@ class CardApplicationController extends Controller
      * @param UpdateCardApplicationRequest $request
      * @param CardApplication $cardApplication
      * @return array
+     * @throws \Throwable
      */
-    public function update(UpdateCardApplicationRequest $request, CardApplication $cardApplication)
+    public function update(UpdateCardApplicationRequest $request,CardApplication $cardApplication): array
     {
-
-        if ($request->has('files'))
-            $files = $request->file('files');
-        else
-            return ['success'=>false,'message'=>'there isn\'t files'];
-
-        foreach ($files as $index => $file) {
-            $filename = $file->getClientOriginalName();
-            $file->storeAs('uploads/general/'."$cardApplication->academic_id", $filename);
-        }
-        return ['success'=>true,'message'=>'Files uploaded successfully!'];
+        if (Auth::user()->getAttribute('academic_id')!=$cardApplication->academic_id)
+            return ['success'=>false,
+        'message'=>'You don\'t have authority to update the Application ',
+    ];
+        if($cardApplication->updateOrFail(
+            ['status'=>CardStatusEnum::SUBMITTED]))
+            return ['success'=>true,
+                'message'=>'Application has been saved',
+                ];
+        return ['success'=>false,
+            'message'=>'Application didn\'t saved',
+        ];
     }
 
     /**

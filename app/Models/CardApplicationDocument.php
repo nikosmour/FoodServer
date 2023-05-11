@@ -21,6 +21,11 @@ class CardApplicationDocument extends Model
     protected $casts = [
         'status' => CardDocumentStatusEnum::class,
     ];
+    /**
+     * The attributes that are mass assignable.
+     * @var array<int, string>
+     */
+    public $fillable = ['file_name','description','status'];
 
     public function cardApplication(): BelongsTo
     {

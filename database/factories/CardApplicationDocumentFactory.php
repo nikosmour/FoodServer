@@ -17,7 +17,8 @@ class CardApplicationDocumentFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->firstName()
+            'file_name' => $this->faker->firstName(),
+            'description' => $this->faker->word()
         ];
     }
 }

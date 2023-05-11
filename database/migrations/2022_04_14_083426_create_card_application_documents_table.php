@@ -17,7 +17,8 @@ return new class extends Migration {
             $table->id();
             $table->unsignedBigInteger('card_application_id');
             $table->enum('status', CardDocumentStatusEnum::values()->toArray())->default('submitted');
-            $table->char('name', 27);
+            $table->char('file_name', 100);
+            $table->char('description', 27);
             $table->timestamps();
             $table->foreign('card_application_id')->references('id')->on('card_applications')->onDelete('cascade')->onUpdate('cascade');
         });

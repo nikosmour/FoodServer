@@ -55,6 +55,33 @@ return [
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
             'throw' => false,
         ],
+        /*
+        |--------------------------------------------------------------------------
+        | Files for Card Application that change every time
+        |--------------------------------------------------------------------------
+        |
+        | Here  will save data like income
+        |
+        */
+
+        'CardApplication' => [
+            'driver' => 'local',
+            'root' => storage_path('app/uploads/applications'),
+            'throw' => false,
+        ],
+        /*
+        |--------------------------------------------------------------------------
+        | Files for Card Application that staying the same  in every application
+        |--------------------------------------------------------------------------
+        |
+        | Here  will save data like academic card, id
+        |
+        */
+        'CardApplicant' => [
+            'driver' => 'local',
+            'root' => storage_path('app/uploads/general'),
+            'throw' => false,
+        ],
 
     ],
 

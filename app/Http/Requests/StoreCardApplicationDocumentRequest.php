@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateCardApplicationRequest extends FormRequest
+class StoreCardApplicationDocumentRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,6 +24,9 @@ class UpdateCardApplicationRequest extends FormRequest
     public function rules()
     {
         return [
+            'file'=> 'required',
+            'description'=> 'required',
+            'id' => ''
         ];
     }
 }

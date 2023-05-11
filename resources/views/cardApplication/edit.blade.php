@@ -12,6 +12,10 @@
                 </ul>
             </div>
         @endif
-        <card-application-edit-form url="{{route('cardApplication.update',$cardApplication)}}"></card-application-edit-form>
+            {{route('document.store',$cardApplication)}}
+        <card-application-edit-form v-bind:url="'{{route('cardApplication.update',$cardApplication)}}'"
+{{--                                    v-bind:url-doc="'{{route('document.store',$cardApplication)}}'",--}}
+                                    v-bind:doc-files="{{$files}}">
+        </card-application-edit-form>
     </div>
 @endsection
