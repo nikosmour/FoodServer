@@ -37,7 +37,7 @@ class CardApplicationDocumentController extends Controller
      */
     public function index($cardApplication)
     {
-        dd('yeouhteo');
+        //
     }
 
     /**
