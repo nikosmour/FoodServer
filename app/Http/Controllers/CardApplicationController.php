@@ -93,7 +93,7 @@ class CardApplicationController extends Controller
     {
         if (Auth::user()->getAttribute('academic_id')!=$cardApplication->academic_id)
             abort(403, 'Unauthorized Access');
-        $files = $cardApplication->cardApplicationDocument()->get(['id','description']);
+        $files = $cardApplication->cardApplicationDocument()->get(['id','description','status']);
 
 
         return view('cardApplication/edit', compact('cardApplication','files'));
@@ -113,9 +113,15 @@ class CardApplicationController extends Controller
         if (Auth::user()->getAttribute('academic_id')!=$cardApplication->academic_id)
             return ['success'=>false,
         'message'=>'You don\'t have authority to update the Application ',
-    ];
-        if($cardApplication->updateOrFail(
-            ['status'=>CardStatusEnum::SUBMITTED]))
+                ];
+        if ($cardApplication->cardApplicationDocument()->where(
+            'status',CardStatusEnum::INCOMPLETE
+            )->count() > 0)
+            return ['success'=>false,
+                'message'=>'You don\'t have update the wrong documents ',
+            ];
+        $cardApplication->status= CardStatusEnum::SUBMITTED;
+        if($cardApplication->saveOrFail())
             return ['success'=>true,
                 'message'=>'Application has been saved',
                 ];

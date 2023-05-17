@@ -112,7 +112,8 @@ class CardApplicationDocumentController extends Controller
             $mimeType = Storage::disk($disk)->mimeType($filePath);
 
             // Return the file response
-            return response($fileContents)->header('Content-Type', $mimeType);
+            return response($fileContents)->header('Content-Type', $mimeType)->
+            header('Content-Disposition',"inline; filename=$document->file_name");
         }
 
         // If the file doesn't exist, return a 404 response or handle it as per your requirements

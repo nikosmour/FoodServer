@@ -5,19 +5,18 @@
                 <br/>
                 <h4 class="text-left">card edit</h4>
             </header>
-            <form v-on:submit.prevent="" id="card_application_form">
+            <form  v-on:submit.prevent="" id="card_application_form">
                 <button @click="addFileUpload()">Add File</button>
                 <div v-for="(file, index) in files" :key="index">
-                    <input v-if="!file.id " type="file" accept="application/pdf" @change="onFileChange($event, index)" v-bind:disabled="!file.description">
-                    <input type="text" v-model="file.description" placeholder="Description" v-bind:disabled="0 != file.id" >
-                    <label v-if="file.message">{{ file.message }}</label>
+                    <input v-if="canEditDocument[index]" type="file" accept="application/pdf" @change="onFileChange($event, index)" v-bind:disabled="!file.description">
+                    <input type="text" v-model="file.description" placeholder="Description" v-bind:disabled="!canEditDocument[index]" >
                     <button @click="previewFile($event,index)">preview {{file.id}}</button>
-
+                    <label v-if="file.message || file.status">{{ file.status+'  '+file.message }}</label>
                 </div>
                 <br/>
                 <label v-bind:class="getClass" > {{result}}</label>
                 <br/>
-                <button type="submit"  @click="submit_form" class="btn btn-primary">Submit</button>
+                <button  v-if="applicationEdit" type="submit"  @click="submit_form" class="btn btn-primary">Submit</button>
             </form>
         </div>
         <object class='col' v-bind:data="docLink" type="application/pdf" width="100%" height="500px"/>
@@ -31,13 +30,15 @@
 export default {
     props:{url:String,
         // urlDoc:String,
-        docFiles:Array },
+        docFiles:Array,
+        applicationEdit:Boolean
+    },
     data() {
         return {
             // files: [{file: null, description:'academic_card',link:'',id:0,message:null,success:null}],
             success:true,
             result:'',
-            docLink:'/img/getbill-7.pdf',
+            docLink:'',
             files:[],
             urlDoc:this.url+'/document'
         }
@@ -48,21 +49,27 @@ export default {
                 'text-success': this.success,
                 'text-danger': !this.success
             }
+        },
+        canEditDocument:function(){
+            return this.files.map((file, index) => {
+                return this.applicationEdit && ['incomplete',null,'submitted'].includes(file.status)
+            });
+
         }
     },
     methods: {
         startingData(){
             this.docFiles.forEach((file, index) => {
-                this.addFileUpload(null,file.id,file.description,this.urlDoc+'/'+file.id);
+                this.addFileUpload(null,file.id,file.description,this.urlDoc+'/'+file.id,file.status);
             });
             if (0 == this.files.length)
                 this.addFileUpload();
             console.log(this.files);
 
         },
-        addFileUpload(file= null,id=0,description= '',link='',message='',success=null) {
+        addFileUpload(file= null,id=0,description= '',link='', status=null, message='',success=null) {
             this.files.push({
-                file: file,id:id, description: description, link:link,message:message,success:success
+                file: file,id:id, description: description, link:link,status:status,message:message,success:success
                 });
         },
         onFileChange(event, index) {
@@ -95,6 +102,7 @@ export default {
                     }
                 });
             file.link = '';
+            file.status = 'submitted';
         },
         previewFile(event,index) {
             const file = this.files[index];
