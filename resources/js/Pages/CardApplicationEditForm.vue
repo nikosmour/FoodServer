@@ -79,12 +79,12 @@ export default {
                 return file.message = 'there isn\'t any file or description';
             this.fileUpload(file);
         },
-        fileUpload(file){
+        fileUpload(file) {
             let params = new FormData();
             //params.append('_method','PUT')
             params.append(`file`, file.file);
             params.append(`description`, file.description);
-            if (0==file.id)
+            if (0 == file.id){
                 axios.post(this.urlDoc, params
                 ).then(function (responseJson) {
                     let json = responseJson['data'];
@@ -103,6 +103,7 @@ export default {
                 });
             file.link = '';
             file.status = 'submitted';
+            }
         },
         previewFile(event,index) {
             const file = this.files[index];
