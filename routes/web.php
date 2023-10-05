@@ -1,5 +1,6 @@
 <?php
 
+use App\Enum\CardStatusEnum;
 use App\Http\Controllers\CardHistoryController;
 use App\Http\Controllers\CouponOwnerController;
 use App\Http\Controllers\DailyMealPlanController;
