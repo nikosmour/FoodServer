@@ -28,7 +28,7 @@ class CardApplicationCheckingController extends Controller
         $cardApplications =CardApplication::whereStatus($category)->select('id','status')->get();
         $models = $cardApplications;
         $caption = 'Card Applications -> '.$category->value;
-        return view('test', compact('models', 'caption'));
+        return view('cardApplicationChecking.index', compact('models', 'caption'));
     }
 
     /**
