@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Enum\CardStatusEnum;
 use App\Enum\UserAbilityEnum;
 use App\Http\Requests\StoreCardApplicationCheckingRequest;
 use App\Http\Requests\UpdateCardApplicationCheckingRequest;
+use App\Models\CardApplication;
 use App\Models\CardApplicationChecking;
 use Illuminate\Http\Response;
 
@@ -19,11 +21,14 @@ class CardApplicationCheckingController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
-    public function index()
+    public function index(CardStatusEnum $category)
     {
-        //
+        $cardApplications =CardApplication::whereStatus($category)->select('id','status')->get();
+        $models = $cardApplications;
+        $caption = 'Card Applications -> '.$category->value;
+        return view('test', compact('models', 'caption'));
     }
 
     /**

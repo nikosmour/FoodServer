@@ -45,6 +45,12 @@
         <li class="nav-item {{ Route::is('coupons.purchase.create') ? 'active' : '' }}">
             <a class="nav-link " href="{{ route('coupons.purchase.create')}}">{{ __('coupons.purchase.create') }}</a>
         </li>
+    @elseauth('cardApplicationStaffs')
+        @foreach(\App\Enum\CardStatusEnum::values() as $cardStatus )
+            <li class="nav-item {{ Route::is('cardApplication.checking.index', ['category'=>$cardStatus]) ? 'active' : '' }}">
+                <a class="nav-link " href="{{ route('cardApplication.checking.index', ['category'=>$cardStatus])}}">{{ __($cardStatus) }}</a>
+            </li>
+        @endforeach
     @endauth
     <li class="nav-item {{ Route::is('mealPlan.*') ? 'active' : '' }}">
         <a class="nav-link " href="{{ route('mealPlan.index')}}">{{ __('student.nav.Program Food') }}</a>

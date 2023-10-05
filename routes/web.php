@@ -41,3 +41,5 @@ Route::resource('coupons/transfer', TransferCouponController::class, ['as' => 'c
     'transfer', 'transferCoupon')->only('create', 'store', 'show');
 Route::resource('cardApplication',\App\Http\Controllers\CardApplicationController::class)->except(['create','destroy']);
 Route::resource('cardApplication/{cardApplication}/document',\App\Http\Controllers\CardApplicationDocumentController::class)->only('store','show');
+Route::resource('/cardApplication/{category}/checking',\App\Http\Controllers\CardApplicationCheckingController::class,['as'=>'cardApplication'])
+    ->whereIn('category',CardStatusEnum::values()->toArray())->only('index');
