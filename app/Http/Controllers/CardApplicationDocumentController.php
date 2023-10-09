@@ -26,8 +26,8 @@ class CardApplicationDocumentController extends Controller
     use DocumentTrait;
     public function __construct()
     {
-        $this->middleware('auth:academics');
-        $this->middleware('ability:' . UserAbilityEnum::CARD_OWNERSHIP->name);
+        //$this->middleware('auth:academics');
+        //$this->middleware('ability:' . UserAbilityEnum::CARD_OWNERSHIP->name);
 
     }
 
@@ -37,7 +37,7 @@ class CardApplicationDocumentController extends Controller
      */
     public function index($cardApplication)
     {
-        //
+        return CardApplicationDocument::whereCardApplicationId($cardApplication)->get('id');
     }
 
     /**
@@ -45,9 +45,10 @@ class CardApplicationDocumentController extends Controller
      *
      * @return Response
      */
-    public function create()
+    public function create(CardApplication $cardApplication)
     {
         //
+
     }
 
 
@@ -98,8 +99,8 @@ class CardApplicationDocumentController extends Controller
      */
     public function show(CardApplication $cardApplication, CardApplicationDocument $document)
     {
-        if (Auth::user()->getAttribute('academic_id')!=$cardApplication->academic_id)
-            abort(403, 'Unauthorized Access');
+        /*if (Auth::user()->getAttribute('academic_id')!=$cardApplication->academic_id)
+            abort(403, 'Unauthorized Access');*/
         $fileStorageData = $this::storePositionData($cardApplication->academic_id, $document); // Adjust the file path according to your file storage location
         $filePath= $fileStorageData[0].'/'.$fileStorageData[1];
         $disk = $fileStorageData[2];
@@ -115,6 +116,7 @@ class CardApplicationDocumentController extends Controller
             return response($fileContents)->header('Content-Type', $mimeType)->
             header('Content-Disposition',"inline; filename=$document->file_name");
         }
+        dd($fileStorageData);
 
         // If the file doesn't exist, return a 404 response or handle it as per your requirements
         abort(404);
