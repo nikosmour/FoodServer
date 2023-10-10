@@ -19,15 +19,17 @@ use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Throwable;
 use function PHPUnit\Framework\isNull;
 
 class CardApplicationController extends Controller
 {
     use DocumentTrait;
+
     public function __construct()
     {
-        $this->middleware('auth:academics');
-        $this->middleware('ability:' . UserAbilityEnum::CARD_OWNERSHIP->name);
+        $this->middleware('auth:academics,cardApplicationStaffs');
+//        $this->middleware('ability:' . UserAbilityEnum::CARD_OWNERSHIP->name);
 
     }
 
@@ -37,11 +39,9 @@ class CardApplicationController extends Controller
      */
     public function index()
     {
+        $this->authorize('viewAny', CardApplication::class);
         $user = Auth::user();
-        if($user->cardApplicant->currentCardApplication()->count() > 0)
-            return redirect(route('cardApplication.show', [
-                "cardApplication"=>$user->cardApplicant->currentCardApplication
-            ]));
+        if ($user->cardApplicant->currentCardApplication()->count() > 0) return redirect(route('cardApplication.show', ["cardApplication" => $user->cardApplicant->currentCardApplication]));
         $user->cardApplicant->address;
         $models = [$user];
         $caption = 'User info';
@@ -65,9 +65,10 @@ class CardApplicationController extends Controller
      */
     public function store(StoreCardApplicationRequest $request)
     {
-        $cardApplication= new CardApplication();
-        $cardApplication->academic_id= Auth::user()->cardApplicant->academic_id;
-        $cardApplication->expiration_date= date('Y-m-d', strtotime('-1 day'));
+        $this->authorize('create', CardApplication::class);
+        $cardApplication = new CardApplication();
+        $cardApplication->academic_id = Auth::user()->cardApplicant->academic_id;
+        $cardApplication->expiration_date = date('Y-m-d', strtotime('-1 day'));
         $cardApplication->save();
         return redirect(route('cardApplication.show', compact("cardApplication")));
     }
@@ -80,6 +81,7 @@ class CardApplicationController extends Controller
      */
     public function show(CardApplication $cardApplication)
     {
+        $this->authorize('view', $cardApplication);
         dd($cardApplication);
     }
 
@@ -91,12 +93,11 @@ class CardApplicationController extends Controller
      */
     public function edit(CardApplication $cardApplication)
     {
-        if (Auth::user()->getAttribute('academic_id')!=$cardApplication->academic_id)
-            abort(403, 'Unauthorized Access');
-        $files = $cardApplication->cardApplicationDocument()->get(['id','description','status']);
+        $this->authorize('update', $cardApplication);
+        $files = $cardApplication->cardApplicationDocument()->get(['id', 'description', 'status']);
 
 
-        return view('cardApplication/edit', compact('cardApplication','files'));
+        return view('cardApplication/edit', compact('cardApplication', 'files'));
 
     }
 
@@ -106,28 +107,15 @@ class CardApplicationController extends Controller
      * @param UpdateCardApplicationRequest $request
      * @param CardApplication $cardApplication
      * @return array
-     * @throws \Throwable
+     * @throws Throwable
      */
-    public function update(UpdateCardApplicationRequest $request,CardApplication $cardApplication): array
+    public function update(UpdateCardApplicationRequest $request, CardApplication $cardApplication): array
     {
-        if (Auth::user()->getAttribute('academic_id')!=$cardApplication->academic_id)
-            return ['success'=>false,
-        'message'=>'You don\'t have authority to update the Application ',
-                ];
-        if ($cardApplication->cardApplicationDocument()->where(
-            'status',CardStatusEnum::INCOMPLETE
-            )->count() > 0)
-            return ['success'=>false,
-                'message'=>'You don\'t have update the wrong documents ',
-            ];
-        $cardApplication->status= CardStatusEnum::SUBMITTED;
-        if($cardApplication->saveOrFail())
-            return ['success'=>true,
-                'message'=>'Application has been saved',
-                ];
-        return ['success'=>false,
-            'message'=>'Application didn\'t saved',
-        ];
+        $this->authorize('update', $cardApplication);
+        if ($cardApplication->cardApplicationDocument()->where('status', CardStatusEnum::INCOMPLETE)->count() > 0) return ['success' => false, 'message' => 'You don\'t have update the wrong documents ',];
+        $cardApplication->status = CardStatusEnum::SUBMITTED;
+        if ($cardApplication->saveOrFail()) return ['success' => true, 'message' => 'Application has been saved',];
+        return ['success' => false, 'message' => 'Application didn\'t saved',];
     }
 
     /**
