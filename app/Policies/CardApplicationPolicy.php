@@ -56,7 +56,7 @@ class CardApplicationPolicy
      */
     public function update(User $user, CardApplication $cardApplication)
     {
-        return isset($user->cardApplicant);
+        return $user->academic_id == $cardApplication->academic_id;
     }
 
     /**
