@@ -26,7 +26,7 @@ class StoreCardApplicationDocumentRequest extends FormRequest
         return [
             'file'=> 'required',
             'description'=> 'required',
-            'id' => ''
+//            'id' => '' //if i want to also give the option to update
         ];
     }
 }

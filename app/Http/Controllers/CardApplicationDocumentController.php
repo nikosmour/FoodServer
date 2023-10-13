@@ -6,6 +6,7 @@ use App\Enum\CardDocumentStatusEnum;
 use App\Enum\UserAbilityEnum;
 use App\Http\Requests\StoreCardApplicationDocumentRequest;
 use App\Http\Requests\StoreCardApplicationRequest;
+use App\Http\Requests\UpdateCardApplicationDocumentRequest;
 use App\Http\Requests\UpdateCardApplicationRequest;
 use App\Models\CardApplication;
 use App\Models\CardApplicationDocument;
@@ -38,7 +39,7 @@ class CardApplicationDocumentController extends Controller
     public function index($cardApplication)
     {
         $this->authorize('viewAny', CardApplicationDocument::class);
-        return CardApplicationDocument::whereCardApplicationId($cardApplication)->get('id');
+        return CardApplicationDocument::whereCardApplicationId($cardApplication)->select(['id','status'])->get();
     }
 
     /**
@@ -138,13 +139,13 @@ class CardApplicationDocumentController extends Controller
      * Update the specified resource in storage.
      *
      * @param UpdateCardApplicationRequest $request
-     * @param CardApplication $cardApplication
+     * @param int $cardApplication
      * @return array
      * @throws \Throwable
      */
-    public function update(\App\Http\Requests $request, CardApplication $cardApplication)
+    public function update(UpdateCardApplicationDocumentRequest $request,int  $cardApplication, int $cardApplicationDocument)
     {
-
+        return CardApplicationDocument::whereId($cardApplicationDocument)->update($request->validated());
     }
 
     /**

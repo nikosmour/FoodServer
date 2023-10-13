@@ -2,15 +2,21 @@
     <div class="col-xm-12 col-sm-6 col-md-7 col-lg-8">
         <header>
             <br/>
-            <h4 class="text-left">Application :  {{applicationId}}</h4>
+            <h4 class="text-left">Application : {{ applicationId }}</h4>
         </header>
-<!--        {{startingData()}}-->
-        <p > file ; {{selectFile}}</p>
         <select v-model="selectFile">
-            <option disabled value="">Please select one</option>
-            <option v-for = "file in files" :value="file.id"> files ; {{file.id}}></option>
+            <!--            <option disabled value="">Please select one</option>-->
+            <option v-for="file in files" :value="file"> files ; {{ file.id }}></option>
         </select>
-        <object class='col' v-if="selectFile" v-bind:data="urlDoc + '/' + selectFile" type="application/pdf" width="100%" height="500px"/>
+        <select v-model="selectFile.status" v-on:select="updateStatus(selectFile.status)">
+            <option disabled value="">Please select one</option>
+            <option v-for="status in ['submitted','accepted','rejected','incomplete']" :value="status"> {{ status }}
+            </option>
+        </select>
+
+
+        <object v-if="selectFile" class='col' height="500px" type="application/pdf"
+                v-bind:data="urlDoc + '/' + selectFile.id" width="100%"/>
     </div>
 
 </template>
@@ -27,12 +33,13 @@ export default {
         return {
             success: true,
             result: '',
+            currentStatus: null,
             selectFile: '',
             files: [],
             //urlDoc: "/img/getbill-7.pdf"
         }
     },
-    computed:{
+    computed: {
         urlDoc() {
             return this.url + '/' + this.applicationId + '/document';
         }
@@ -41,7 +48,7 @@ export default {
         startingData() {
             let thiss = this;
             console.log('startingData');
-            console.log(this.applicationId );
+            console.log(this.applicationId);
             console.log(this.urlDoc);
 
             axios.get(this.urlDoc
@@ -56,13 +63,42 @@ export default {
                     console.log(errors.response.data.errors[error])
                 }*/
             });
-            console.log(this.files);
 
         },
+        updateStatus(file) {
+            let params = new FormData();
+            params.append('_method','PUT')
+            // params.append(`id`, file.id);
+            params.append(`status`, file.status);
+            console.log(params);
+            return axios.post(this.urlDoc + '/' + file.id, params
+            ).then(function (responseJson) {
+                let json = responseJson['data'];
+               // file.success = json['success'];
+               //  file.message = json['message'];
+                //file.message='the file is not exist or is ureadable please upload a new one';
+                return json==1;
+            }).catch(function (errors) {
+                file.success = false;
+                console.log(errors.response.data.errors)
+                file.message = "Request failed:";
+                for (let error in errors.response.data.errors) {
+                    console.log(errors.response.data.errors[error])
+                }
+                return false
+            });
+        }
     },
-    watch:{
-        applicationId(newValue){
+    watch: {
+        applicationId(newValue) {
             this.startingData();
+        },
+        selectFile(newValue, oldValue) {
+            if (oldValue)
+                if (oldValue.status != this.currentStatus)
+                    if (!this.updateStatus(oldValue))
+                        oldValue.status=this.currentStatus;
+            this.currentStatus = newValue.status;
         }
     },
     created() {
