@@ -65,7 +65,7 @@ export default {
             if (this.expirationDate) {
                 params.append('expiration_date', this.expirationDate)
             }
-            if ( this.commentChecking) {
+            if (this.commentChecking) {
                 params.append('card_application_staff_comment',this.commentChecking)
             }
             console.log(params);
