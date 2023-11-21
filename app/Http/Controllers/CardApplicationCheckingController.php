@@ -9,6 +9,8 @@ use App\Http\Requests\UpdateCardApplicationCheckingRequest;
 use App\Models\CardApplication;
 use App\Models\CardApplicationChecking;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class CardApplicationCheckingController extends Controller
 {
@@ -49,6 +51,22 @@ class CardApplicationCheckingController extends Controller
      */
     public function store(StoreCardApplicationCheckingRequest $request)
     {
+        $validatedData=$request->validated();
+        DB::transaction(function () use ($validatedData) {
+                Auth::user()->cardApplication()->attach($validatedData['card_application_id']);
+                CardApplication::whereId($validatedData['card_application_id'])->update(['status'=>$validatedData['status']]);
+        });
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param UpdateCardApplicationCheckingRequest $request
+     * @param CardApplicationChecking $cardApplicationChecking
+     * @return Response
+     */
+    public function update(UpdateCardApplicationCheckingRequest $request, CardApplicationChecking $cardApplicationChecking)
+    {
         //
     }
 
@@ -70,18 +88,6 @@ class CardApplicationCheckingController extends Controller
      * @return Response
      */
     public function edit(CardApplicationChecking $cardApplicationChecking)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param UpdateCardApplicationCheckingRequest $request
-     * @param CardApplicationChecking $cardApplicationChecking
-     * @return Response
-     */
-    public function update(UpdateCardApplicationCheckingRequest $request, CardApplicationChecking $cardApplicationChecking)
     {
         //
     }

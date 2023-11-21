@@ -1,19 +1,27 @@
 <template>
-    <div class = 'row '>
-<       <div>
-            <table>
-                <thead>
-                <tr>
-                    <th>ID</th>
-                </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="item in items" :key="item.id" @click="showSecondTable(item.id)">
-                        <td>{{ item.id }}</td>
-                    </tr>
-                </tbody>
-            </table>
-            <CardApplicationShowData v-if="selectedItemId !== null" v-bind:applicationId="selectedItemId" :url='url' />
+    <div class=' container-fluid row '>
+        <table class="col-auto ">
+            <thead>
+            <tr>
+                <th>ID</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="item in items" :key="item.id" @click="showSecondTable(item)">
+                <td>{{ item.id }}</td>
+            </tr>
+            </tbody>
+        </table>
+        <div class = 'col-auto row' v-if="selectedItem !== null" >
+            <CardApplicationShowData :url='url' v-bind:applicationId="selectedItem.id"/>
+            <div class="col-auto">
+                <h4>Application Status</h4>
+                <select v-model="selectedItem.status" v-on:change="updateStatus(selectedItem)">
+                    <option disabled value="">Please select one</option>
+                    <option v-for="status in ['accepted','rejected','incomplete']" :value="status"> {{ status }}
+                    </option>
+                </select>
+            </div>
         </div>
     </div>
 </template>
@@ -24,140 +32,164 @@ import CardApplicationShowData from "../Components/CardApplicationShowData.vue";
 
 export default {
     components: {CardApplicationShowData},
-    props:{url:String,
-        items:Array
+    props: {
+        url: String,
+        items: Array
     },
     data() {
         return {
-            selectedItemId: null,
+            selectedItem: null,
         };
     },
     methods: {
-        showSecondTable(itemId) {
+        showSecondTable(item) {
             console.log('showSecondTable');
-            this.selectedItemId = itemId;
+            this.selectedItem = item;
         },
-    },
-
-
-
-/*
-
-
-
-    props:{url:String,
-        // urlDoc:String,
-        docFiles:Array,
-        applicationEdit:Boolean
-    },
-    data() {
-        return {
-            // files: [{file: null, description:'academic_card',link:'',id:0,message:null,success:null}],
-            success:true,
-            result:'',
-            docLink:'',
-            files:[],
-            urlDoc:this.url+'/document'
-        }
-    },
-    computed:{
-        getClass: function () {
-            return {
-                'text-success': this.success,
-                'text-danger': !this.success
-            }
-        },
-        canEditDocument:function(){
-            return this.files.map((file, index) => {
-                return this.applicationEdit && ['incomplete',null,'submitted'].includes(file.status)
-            });
-
-        }
-    },
-    methods: {
-        startingData(){
-            this.docFiles.forEach((file, index) => {
-                this.addFileUpload(null,file.id,file.description,this.urlDoc+'/'+file.id,file.status);
-            });
-            if (0 == this.files.length)
-                this.addFileUpload();
-            console.log(this.files);
-
-        },
-        addFileUpload(file= null,id=0,description= '',link='', status=null, message='',success=null) {
-            this.files.push({
-                file: file,id:id, description: description, link:link,status:status,message:message,success:success
-                });
-        },
-        onFileChange(event, index) {
-            let file = this.files[index];
-            file.file = event.target.files[0];
-            if (!file.file || !file.description)
-                return file.message = 'there isn\'t any file or description';
-            this.fileUpload(file);
-        },
-        fileUpload(file) {
+        updateStatus(application) {
             let params = new FormData();
             //params.append('_method','PUT')
-            params.append(`file`, file.file);
-            params.append(`description`, file.description);
-            if (0 == file.id){
-                axios.post(this.urlDoc, params
+            // params.append(`id`, application.id);
+            params.append(`status`, application.status);
+            params.append('card_application_id',application.id)
+            console.log(params);
+            return axios.post(window.location.href, params
+            ).then(function (responseJson) {
+                let json = responseJson['data'];
+                // application.success = json['success'];
+                //  application.message = json['message'];
+                //application.message='the application is not exist or is ureadable please upload a new one';
+                return json==1;
+            }).catch(function (errors) {
+                application.success = false;
+                console.log(errors.response.data.errors)
+                application.message = "Request failed:";
+                for (let error in errors.response.data.errors) {
+                    console.log(errors.response.data.errors[error])
+                }
+                return false
+            });
+        }
+    },
+
+
+    /*
+
+
+
+        props:{url:String,
+            // urlDoc:String,
+            docFiles:Array,
+            applicationEdit:Boolean
+        },
+        data() {
+            return {
+                // files: [{file: null, description:'academic_card',link:'',id:0,message:null,success:null}],
+                success:true,
+                result:'',
+                docLink:'',
+                files:[],
+                urlDoc:this.url+'/document'
+            }
+        },
+        computed:{
+            getClass: function () {
+                return {
+                    'text-success': this.success,
+                    'text-danger': !this.success
+                }
+            },
+            canEditDocument:function(){
+                return this.files.map((file, index) => {
+                    return this.applicationEdit && ['incomplete',null,'submitted'].includes(file.status)
+                });
+
+            }
+        },
+        methods: {
+            startingData(){
+                this.docFiles.forEach((file, index) => {
+                    this.addFileUpload(null,file.id,file.description,this.urlDoc+'/'+file.id,file.status);
+                });
+                if (0 == this.files.length)
+                    this.addFileUpload();
+                console.log(this.files);
+
+            },
+            addFileUpload(file= null,id=0,description= '',link='', status=null, message='',success=null) {
+                this.files.push({
+                    file: file,id:id, description: description, link:link,status:status,message:message,success:success
+                    });
+            },
+            onFileChange(event, index) {
+                let file = this.files[index];
+                file.file = event.target.files[0];
+                if (!file.file || !file.description)
+                    return file.message = 'there isn\'t any file or description';
+                this.fileUpload(file);
+            },
+            fileUpload(file) {
+                let params = new FormData();
+                //params.append('_method','PUT')
+                params.append(`file`, file.file);
+                params.append(`description`, file.description);
+                if (0 == file.id){
+                    axios.post(this.urlDoc, params
+                    ).then(function (responseJson) {
+                        let json = responseJson['data'];
+                        file.id = json['id'];
+                        file.success = json['success'];
+                        file.message = json['message'];
+                        //file.message='the file is not exist or is ureadable please upload a new one';
+                        console.log(file.message);
+                    }).catch(function (errors) {
+                        file.success = false;
+                        console.log(errors.response.data.errors)
+                        file.message = "Request failed:";
+                        for (let error in errors.response.data.errors) {
+                            console.log(errors.response.data.errors[error])
+                        }
+                    });
+                file.link = '';
+                file.status = 'submitted';
+                }
+            },
+            previewFile(event,index) {
+                const file = this.files[index];
+                if (''!= file.link) return (this.docLink=file.link);
+                if(null == file.file) return;
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    this.docLink = file.link = e.target.result;
+                };
+                reader.readAsDataURL(file.file);
+            },
+            submit_form() {
+                this.files.forEach((file, index) => {
+                    this.fileUpload(file);
+                });
+                let params = new FormData();
+                params.append('_method','PUT');
+                let form = this;
+                axios.post(form.url, params
                 ).then(function (responseJson) {
                     let json = responseJson['data'];
-                    file.id = json['id'];
-                    file.success = json['success'];
-                    file.message = json['message'];
-                    //file.message='the file is not exist or is ureadable please upload a new one';
-                    console.log(file.message);
+                    form.success = json['success'];
+                    form.result = json['message'];
+                    console.log(form.result);
                 }).catch(function (errors) {
-                    file.success = false;
+                    form.success = false;
                     console.log(errors.response.data.errors)
-                    file.message = "Request failed:";
+                    form.result = "Request failed:";
                     for (let error in errors.response.data.errors) {
+                        form.result = form.result + ' ' + error + ' => ' + errors.response.data.errors[error];
                         console.log(errors.response.data.errors[error])
                     }
                 });
-            file.link = '';
-            file.status = 'submitted';
             }
         },
-        previewFile(event,index) {
-            const file = this.files[index];
-            if (''!= file.link) return (this.docLink=file.link);
-            if(null == file.file) return;
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                this.docLink = file.link = e.target.result;
-            };
-            reader.readAsDataURL(file.file);
-        },
-        submit_form() {
-            this.files.forEach((file, index) => {
-                this.fileUpload(file);
-            });
-            let params = new FormData();
-            params.append('_method','PUT');
-            let form = this;
-            axios.post(form.url, params
-            ).then(function (responseJson) {
-                let json = responseJson['data'];
-                form.success = json['success'];
-                form.result = json['message'];
-                console.log(form.result);
-            }).catch(function (errors) {
-                form.success = false;
-                console.log(errors.response.data.errors)
-                form.result = "Request failed:";
-                for (let error in errors.response.data.errors) {
-                    form.result = form.result + ' ' + error + ' => ' + errors.response.data.errors[error];
-                    console.log(errors.response.data.errors[error])
-                }
-            });
-        }
-    },
-    created() {
-        this.startingData();
-    }*/
+        created() {
+            this.startingData();
+        }*/
 }
 </script>
