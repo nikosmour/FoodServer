@@ -16,6 +16,13 @@
             <CardApplicationShowData :url='url' v-bind:applicationId="selectedItem.id"/>
             <div class="col-auto">
                 <h4>Application Status</h4>
+                <div>
+                    <label for="commentStaff">Enter text:</label>
+                    <input type="text" id="commentStaff" v-model="commentChecking">
+                    <label for="expiration_date">Enter text:</label>
+                    <input type="date" id="expiration_date" v-model="expirationDate">
+
+                </div>
                 <select v-model="selectedItem.status" v-on:change="updateStatus(selectedItem)">
                     <option disabled value="">Please select one</option>
                     <option v-for="status in ['accepted','rejected','incomplete']" :value="status"> {{ status }}
@@ -39,7 +46,10 @@ export default {
     data() {
         return {
             selectedItem: null,
+            commentChecking: null,
+            expirationDate: null
         };
+
     },
     methods: {
         showSecondTable(item) {
@@ -52,6 +62,10 @@ export default {
             // params.append(`id`, application.id);
             params.append(`status`, application.status);
             params.append('card_application_id',application.id)
+            params.append('expiration_date',this.expirationDate)
+            if ( this.commentChecking) {
+                params.append('card_application_staff_comment',this.commentChecking)
+            }
             console.log(params);
             return axios.post(window.location.href, params
             ).then(function (responseJson) {
