@@ -9,5 +9,5 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
  */
 class CardApplicationChecking extends Pivot
 {
-    //
+    public $timestamps = false;
 }
