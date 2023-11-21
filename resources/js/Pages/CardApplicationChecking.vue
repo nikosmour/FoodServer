@@ -62,7 +62,9 @@ export default {
             // params.append(`id`, application.id);
             params.append(`status`, application.status);
             params.append('card_application_id',application.id)
-            params.append('expiration_date',this.expirationDate)
+            if (this.expirationDate) {
+                params.append('expiration_date', this.expirationDate)
+            }
             if ( this.commentChecking) {
                 params.append('card_application_staff_comment',this.commentChecking)
             }
