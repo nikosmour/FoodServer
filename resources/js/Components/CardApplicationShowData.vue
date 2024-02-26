@@ -4,6 +4,7 @@
             <br/>
             <h4 class="text-left">Application : {{ applicationId }}</h4>
         </header>
+        <h5>files</h5>
         <select v-model="selectFile">
             <!--            <option disabled value="">Please select one</option>-->
             <option v-for="file in files" :value="file"> files ; {{ file.id }}></option>
@@ -13,8 +14,6 @@
             <option v-for="status in ['submitted','accepted','rejected','incomplete']" :value="status"> {{ status }}
             </option>
         </select>
-
-
         <object v-if="selectFile" class='col' height="500px" type="application/pdf"
                 v-bind:data="urlDoc + '/' + selectFile.id" width="100%"/>
     </div>
