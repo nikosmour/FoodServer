@@ -1,30 +1,21 @@
 <template>
-    <div class=' container-fluid row '>
-        <router-view :applications="applications" class=' col ' v-on:getId="getId($event)"/>
-        <template v-if="true" class="col-auto">
-            <!--            <b-pagination
-                            v-model="currentPage"
-                            total-rows=100
-                            per-page=1
-                            first-text="⏮"
-                            prev-text="⏪"
-                            next-text="⏩"
-                            last-text="⏭"
-                            class="mt-4"
-                        ></b-pagination>-->
+    <div class="container-fluid row">
+        <router-view :applications="applications" class="col" @getId="getId($event)"/>
+
+        <div class="col-auto">
             <div v-if="cursor.data">
-                <button v-if="cursor.next_cursor" @click="nextPage">Next Page</button>
-                <button v-if="cursor.prev_cursor" @click="prevPage">Previous Page</button>
+                <button v-if="cursor.next_cursor" class="btn btn-primary" @click="nextPage">Next Application</button>
+                <button v-if="cursor.prev_cursor" class="btn btn-secondary" @click="prevPage">Previous Application
+                </button>
             </div>
-            <CardApplicationShowData v-bind:application="selectedItem"/>
-        </template>
+            <CardApplicationShowData :application="selectedItem"/>
+        </div>
+
         <message v-bind="result"></message>
     </div>
 </template>
 
-
 <script>
-
 import CardApplicationShowData from "../Components/CardApplicationShowData.vue";
 
 export default {
@@ -37,7 +28,7 @@ export default {
                 message: '',
                 success: true,
                 hide: false,
-                errors: ['']
+                errors: []
             },
         };
     },
@@ -54,125 +45,111 @@ export default {
     },
     methods: {
         broadcasting() {
-            if (typeof Echo !== 'undefined' && typeof this.category !== 'undefined')
+            if (typeof Echo !== 'undefined' && this.category)
                 Echo.join(`cardChecking.${this.category}`)
-                    .here((users) => {
-                        console.log('i am on  the channel', users);
-                    })
-                    .joining((user) => {
-                        console.log('joining', user);
-                    })
-                    .leaving((user) => {
-                        console.log('leaving ', user);
-                    })
-                    .error((error) => {
-                        console.error(error);
-                    })
+                    .here((users) => console.log('Joined channel', users))
+                    .joining((user) => console.log('Joining', user))
+                    .leaving((user) => console.log('Leaving', user))
+                    .error((error) => console.error(error))
                     .listen('CardApplicationUpdated', this.updateApplicationsIds);
         },
         getId(formData) {
             this.getApplications(formData[0], formData[1]).then(applications => {
-                this.$router.replace({name: this.$route.name, query: {'application': applications[0].id}})
-
-
-            })
+                if (applications[0]) {
+                    this.$router.replace({name: this.$route.name, query: {'application': applications[0].id}});
+                }
+            });
         },
         async getApplications(name, value, url = route('cardApplication.checking.search')) {
-            let params = {[name]: value};
-            let vue = this;
+            try {
+                const response = await axios.get(url, {params: {[name]: value}});
+                console.log('get Applications', response.data);
 
-            return await axios.get(url, {params: params}
-            ).then(responseJson => {
-                console.log('get Application', responseJson['data']);
-                if (name !== 'application_id')
-                    this.cursor = responseJson['data'];
-                let applications = responseJson['data']['data'];
-                let success = applications.length > 0;
-                vue.result.success = success;
-                vue.result.errors = [];
-                if (success) {
-                    vue.result.message = "Applications found";
-                    return applications;
-                }
-                vue.result.message = "Request failed: Application don't found";
-                return [null];
-            }).catch(function (errors) {
+                if (name !== 'application_id') this.cursor = response.data;
+
+                const applications = response.data.data;
+                const success = applications.length > 0;
+
+                this.result.success = success;
+                this.result.errors = [];
+                this.result.message = success ? "Applications found" : "Request failed: Application not found";
+
+                return applications.length > 0 ? applications : [null];
+            } catch (errors) {
                 console.log(errors);
-                // vue.result.errors = errors.response.data.errors;
-                vue.result.message = "Request failed: Application don't found";
-                vue.result.success = false;
+                this.result.message = "Request failed: Application not found";
+                this.result.success = false;
                 return [null];
-            });
-
+            }
         },
-
-
         async startingData() {
-            console.log('cardApplicationChecking.startingData')
-            if (this.category)
-                this.getApplications('status', this.category).then(
-                    applications => {
-                        if (!this.applicationId && applications.length > 0 && applications[0] !== null)
-                            this.$router.replace({name: this.$route.name, query: {'application': applications[0].id}})
-                    }
-                );
-
+            console.log('cardApplicationChecking.startingData');
+            if (this.category) {
+                const applications = await this.getApplications('status', this.category);
+                if (!this.applicationId && applications.length > 0 && applications[0]) {
+                    this.$router.replace({name: this.$route.name, query: {'application': applications[0].id}});
+                }
+            }
             this.selectedItem = this.applicationId ? (await this.getApplications('application_id', this.applicationId))[0] : null;
-
-
         },
         updateApplicationsIds(e) {
-            let cardApplication_id = e.cardApplication_id;
-            let status = e.status;
-            let position = this.applications.findIndex(obj => obj.id >= cardApplication_id);
+            const cardApplicationId = e.cardApplication_id;
+            const status = e.status;
+            const position = this.applications.findIndex(obj => obj.id >= cardApplicationId);
+
             if (position !== -1)
-                if (status !== this.category)//&& this.applications[position].id === cardApplication_id)
+                if (status !== this.category)
                     this.applications.splice(position, 1);
                 else
-                    this.applications.splice(position, 0, {id: cardApplication_id});
+                    this.applications.splice(position, 0, {id: cardApplicationId});
             else if (status === this.category)
-                this.applications.push({id: cardApplication_id});
+                this.applications.push({id: cardApplicationId});
         },
         nextPage() {
-            this.changePage(this.cursor?.next_page_url); // Use the next cursor from the response
+            this.changePage(this.cursor.next_page_url);
         },
-
         prevPage() {
-            this.changePage(this.cursor?.prev_page_url);// Use the prev cursor from the response
+            this.changePage(this.cursor.prev_page_url);
         },
-        changePage(url) {
-            if (url)
-                this.getApplications('status', this.category, url).then(applications => {
+        async changePage(url) {
+            if (url) {
+                const applications = await this.getApplications('status', this.category, url);
+                if (applications[0]) {
                     this.$router.replace({name: this.$route.name, query: {'application': applications[0]?.id}});
-                });
-        },
-
-
+                }
+            }
+        }
     },
     mounted() {
         this.startingData();
         this.broadcasting();
-
     },
     watch: {
         category(newValue, oldValue) {
-            this.applications = []
-            this.startingData()
+            this.applications = [];
+            this.startingData();
             this.broadcasting();
-            if (typeof Echo !== 'undefined' && typeof oldValue !== 'undefined')
-                Echo.leave(`cardChecking.${oldValue}`);
+            if (typeof Echo !== 'undefined' && oldValue) Echo.leave(`cardChecking.${oldValue}`);
         },
         async applicationId(newValue) {
-            if (!newValue)
-                return
-            let position = this.applications.findIndex(obj => obj.id == newValue);
-            this.selectedItem = position === -1 ? (await this.getApplications('application_id', newValue))[0] : this.applications[position];
+            if (newValue) {
+                const position = this.applications.findIndex(obj => obj.id == newValue);
+                this.selectedItem = position === -1 ? (await this.getApplications('application_id', newValue))[0] : this.applications[position];
+            }
         }
-
     },
-    beforeRouteLeave(from, to) {
-        if (typeof Echo !== 'undefined' && typeof this.category !== 'undefined')
-            Echo.leave(`cardChecking.${this.category}`);
-    },
-}
+    beforeRouteLeave(to, from) {
+        if (typeof Echo !== 'undefined' && this.category) Echo.leave(`cardChecking.${this.category}`);
+    }
+};
 </script>
+
+<style scoped>
+.container-fluid {
+    padding: 20px;
+}
+
+button.btn {
+    margin: 5px;
+}
+</style>
