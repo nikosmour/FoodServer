@@ -1,140 +1,148 @@
 <template>
-    <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
+    <!-- Navigation bar component -->
+    <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm" role="navigation">
         <div class="container">
-            <router-link class="nav-link router-link-exact-active" to=" ">
-                {{ appName }}
+            <!-- Brand/logo -->
+            <router-link class="nav-link router-link-exact-active" to="">
+                {{ appName }} <!-- Display the application name -->
             </router-link>
-            <button aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="'Toggle navigation'"
+            <!-- Toggle button for mobile navigation -->
+            <button aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"
                     class="navbar-toggler" data-bs-target="#navbarSupportedContent"
                     data-bs-toggle="collapse" type="button">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
             <div id="navbarSupportedContent" class="collapse navbar-collapse">
-                <!-- Left Side Of Navbar -->
+                <!-- Left side of navbar - for authenticated users -->
                 <ul v-if="isAuthenticated" class="navbar-nav me-auto">
+                    <!-- Display 'Purchase' link if user has coupon selling ability -->
                     <li v-if="hasAbility($enums.UserAbilityEnum.COUPON_SELL)" class="nav-item">
-                        <router-link :to="{name:'purchase'}" class="nav-link router-link-exact-active"> Purchase
+                        <router-link :to="{ name: 'purchase' }" class="nav-link router-link-exact-active"> Purchase
                         </router-link>
                     </li>
+                    <!-- Display 'Entry Checking' link if user has entry checking ability -->
                     <li v-if="hasAbility($enums.UserAbilityEnum.ENTRY_CHECK)" class="nav-item">
-                        <router-link :to="{name:'entryChecking'}" class="nav-link router-link-exact-active">
-                            EntryChecking
+                        <router-link :to="{ name: 'entryChecking' }" class="nav-link router-link-exact-active">
+                            Entry Checking
                         </router-link>
                     </li>
+                    <!-- Display links for card application checking based on user's abilities -->
                     <template v-if="hasAbility($enums.UserAbilityEnum.CARD_APPLICATION_CHECK)">
-                        <li v-for="category in Object.keys($enums.CardStatusEnum)" class="nav-item">
+                        <li v-for="category in Object.keys($enums.CardStatusEnum)" :key="category" class="nav-item">
                             <router-link
-                                :to="{name:'cardApplication.checking',params:{category:category.toLowerCase()}}"
+                                :to="{ name: 'cardApplication.checking', params: { category: category.toLowerCase() } }"
                                 class="nav-link router-link-exact-active">
                                 {{ category.toLowerCase() }}
                             </router-link>
                         </li>
                     </template>
+                    <!-- Dropdown menu for card ownership -->
                     <li v-if="hasAbility($enums.UserAbilityEnum.CARD_OWNERSHIP)" class="nav-item dropdown">
                         <a v-pre id="navbarDropdown"
-                           aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle " data-bs-toggle="dropdown"
+                           aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle"
+                           data-bs-toggle="dropdown"
                            href="#" role="button">
-                            student.nav.Free Food <span class="caret"></span>
+                            Student Menu <span class="caret"></span>
                         </a>
+                        <!-- Dropdown items -->
                         <div aria-labelledby="navbarDropdown" class="dropdown-menu dropdown-menu-left">
-                            <router-link :to="{name:'card.History'}"
+                            <router-link :to="{ name: 'card.History' }"
                                          class="nav-link router-link-exact-active dropdown-item">
-                                'student.card.History'
+                                Card History
                             </router-link>
-                            <router-link :to="{name:'card.application'}"
+                            <router-link :to="{ name: 'card.application' }"
                                          class="nav-link router-link-exact-active dropdown-item">
-                                'student.card.Request'
+                                Card Application
                             </router-link>
                         </div>
                     </li>
 
+                    <!-- Dropdown menu for coupon ownership -->
                     <li v-if="hasAbility($enums.UserAbilityEnum.COUPON_OWNERSHIP)"
                         class="nav-item dropdown">
                         <a v-pre id="navbarDropdown"
-                           aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle " data-bs-toggle="dropdown"
+                           aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle"
+                           data-bs-toggle="dropdown"
                            href="#" role="button">
-                            student.nav.Coupons <span class="caret"></span>
+                            Coupons <span class="caret"></span>
                         </a>
+                        <!-- Dropdown items -->
                         <div aria-labelledby="navbarDropdown" class="dropdown-menu dropdown-menu-left">
-                            <router-link :to="{name:'coupons.History'}"
+                            <router-link :to="{ name: 'coupons.History' }"
                                          class="nav-link router-link-exact-active dropdown-item">
-                                coupons.History
+                                Coupons History
                             </router-link>
-                            <router-link :to="{name:'coupons.transfer'}"
+                            <router-link :to="{ name: 'coupons.transfer' }"
                                          class="nav-link router-link-exact-active dropdown-item">
-                                coupons.transfer
+                                Coupons Transfer
                             </router-link>
                         </div>
                     </li>
                 </ul>
 
-                <!-- Right Side Of Navbar -->
+                <!-- Right side of navbar - for authentication links -->
                 <ul class="navbar-nav ms-auto">
-                    <!-- Authentication Links -->
-                    <!--                    @guest
-                                        @if (Route::has('login'))-->
+                    <!-- Display 'Login' link if user is not authenticated -->
                     <li v-if="!isAuthenticated" class="nav-item">
-                        <router-link :to="{name:'login'}" class="nav-link router-link-exact-active"> Login</router-link>
+                        <router-link :to="{ name: 'login' }" class="nav-link router-link-exact-active"> Login
+                        </router-link>
                     </li>
-                    <!--                    @endif
 
-                                        @if (Route::has('register'))-->
-                    <!--                    <li class="nav-item">
-                                            <router-link class="nav-link router-link-exact-active" to="{name:'Register'}"> Register </router-link>
-                                        </li>-->
-                    <!--                    @endif-->
-                    <!--                    @else -->
+                    <!-- Display user dropdown menu if user is authenticated -->
                     <li v-else class="nav-item dropdown">
                         <a id="navbarDropdown" aria-expanded="false" aria-haspopup="true"
                            class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button">
                             {{ currentUser.name }} <span class="caret"></span>
                         </a>
 
+                        <!-- Dropdown items -->
                         <div aria-labelledby="navbarDropdown" class="dropdown-menu dropdown-menu-end">
-                            <router-link :to="{name:'userProfile'}" class="nav-link router-link-exact-active"> My Info
+                            <router-link :to="{ name: 'userProfile' }" class="nav-link router-link-exact-active"> My
+                                Info
                             </router-link>
-                            <button class="nav-link "
-                                    v-on:click="logout()">
-                                LogOut
+                            <!-- Logout button -->
+                            <button class="nav-link"
+                                    @click="logout()">
+                                Logout
                             </button>
                         </div>
                     </li>
-                    <!--                    @endguest-->
                 </ul>
             </div>
         </div>
     </nav>
 
 </template>
+
 <script>
 import {mapActions, mapGetters} from "vuex";
 
 export default {
     computed: {
-        /*...mapState({
-            isAuthenticated: state => state.auth.isLoggedIn,
-            currentUser: state => state.auth.user,
-        }),*/
+        // Mapping getters from Vuex store
         ...mapGetters([
             'isAuthenticated',
             'currentUser',
             'hasAbility',
         ]),
+        // Compute route title
         routeTitle() {
             return this.$route.name ? `${this.$route.name} | ${this.appName}` : this.appName;
         },
+        // Get application name from environment variables
         appName() {
             return process.env.MIX_APP_NAME;
         }
     },
     methods: {
+        // Mapping actions from Vuex store
         ...mapActions({
-            // loginUser: 'loginUser',
             logout: 'logout',
         }),
     },
     watch: {
+        // Watch for changes in route title and update document title
         routeTitle(newValue) {
             document.title = newValue;
         }
@@ -143,5 +151,12 @@ export default {
 </script>
 
 <style scoped>
+.router-link-active:focus {
+    outline: 2px solid #005fcc;
+}
 
+.router-link-active {
+    padding: 10px;
+    display: inline-block;
+}
 </style>

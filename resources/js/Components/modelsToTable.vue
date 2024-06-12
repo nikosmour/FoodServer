@@ -1,39 +1,50 @@
 <template>
-    <table class="table text-center table-hover table-col-to-row-sm caption-top">
-        <caption>{{ caption }}</caption>
-        <thead class="thead-dark">
-        <tr>
-            <th v-for="key in attributes" scope="col">{{ key }}</th>
-        </tr>
-        </thead>
-        <tbody v-for="(model,modelKey) in models" :key="'model.'+modelKey">
-        <tr>
-            <td v-for="key in attributes" :key="'model.'+modelKey+'.attribute.'+key">
-                {{ model[key] }}
-            </td>
-        </tr>
-        <tr v-for="relationship in relationships" :key="'model.'+modelKey+'.attribute.'+relationship">
-            <td/>
-            <td :colspan="attributes.length -1">
-                <models-to-table :caption="relationship" :models="dataToArray(model[relationship])"/>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+    <div>
+        <table class="table table-hover table-bordered">
+            <caption>{{ caption }}</caption>
+            <thead class="thead-dark">
+            <tr>
+                <th v-for="key in attributes" :key="key" scope="col">{{ key }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="(model, index) in models" :key="'model-' + index">
+                <td v-for="key in attributes" :key="'model-' + index + '-attribute-' + key">{{ model[key] }}</td>
+            </tr>
+            <tr v-for="(relationship, index) in relationships" :key="'relationship-' + index">
+                <td :colspan="attributes.length" class="p-0">
+                    <button class="btn btn-link w-100 text-start" @click="toggleRelationship(index)">
+                        {{ relationship }}
+                        <span v-if="expandedRelationships.includes(index)">&#9650;</span>
+                        <span v-else>&#9660;</span>
+                    </button>
+                    <div v-if="expandedRelationships.includes(index)">
+                        <models-to-table :caption="relationship" :models="dataToArray(models[0][relationship])"/>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </template>
 
 <script>
 export default {
     props: {
         models: {
-            /*type: Array,
+            type: Array,
             required: false,
-            default: [],*/
+            default: () => [],
         },
         caption: {
             type: String,
-            default: "table",
+            default: 'Table',
         },
+    },
+    data() {
+        return {
+            expandedRelationships: [],
+        };
     },
     computed: {
         firstModel() {
@@ -45,75 +56,55 @@ export default {
         relationships() {
             return Object.keys(this.firstModel).filter(key => typeof this.firstModel[key] === 'object');
         },
-
-
     },
     methods: {
         dataToArray(data) {
             return Array.isArray(data) ? data : [data];
         },
+        toggleRelationship(index) {
+            const pos = this.expandedRelationships.indexOf(index);
+            if (pos > -1) {
+                this.expandedRelationships.splice(pos, 1);
+            } else {
+                this.expandedRelationships.push(index);
+            }
+        },
     },
 };
 </script>
 
-
-<!--
-<script>
-export default {
-    name: "modelsToTable",
-    props:{
-        models:Array,
-        caption:{type:String,default:'table'}
-    },
-    data() {
-        return {
-            sizeModels:5
-        }
-    }
-}
-</script>
-
-
-<template>
-    <div>
-        <table class="table text-center  table-hover table-col-to-row-sm caption-top">
-            <caption>{{ caption }}</caption>
-            <thead class="thead-dark" v-if="models.length !== 0">
-                <tr>
-                    <th scope="col" v-for="(value, key) in models[0] ">{{key}}</th>
-                </tr>
-            </thead>
-            <tbody>
-            <div v-for="model in models">
-                <tr>
-                    <td v-if="typeof value !== 'Object'" v-for="value in model">{{value}}</td>
-                </tr>
-                <tr v-if="typeof relationship === 'Object'" v-for="(relationship , name) in model">
-                    <td></td>
-                    <td colspan="{{sizeModels}}">
-                        <models-to-table :models="relationship" :caption="name"/>
-                    </td>
-                </tr>
-            </div>
-
-&lt;!&ndash;            @foreach($model->getRelations() as $name=>$relation)
-            @if(!is_null($relation))
-            <tr>
-                <td></td>
-                <td colspan="{{count($model->getAttributes())-1}}">
-                    @include('components.modelToTable',['models'=>(is_countable($relation))?$relation: [$relation],'caption'=>$name ])
-                </td>
-            </tr>
-            @endif
-            @endforeach
-            @endforeach&ndash;&gt;
-            </tbody>
-        </table>
-    </div>
-
-</template>
-
 <style scoped>
+.table {
+    table-layout: auto;
+    width: 100%;
+    margin-bottom: 1rem;
+    color: #212529;
+}
 
+.table th,
+.table td {
+    padding: 0.75rem;
+    vertical-align: top;
+    border-top: 1px solid #dee2e6;
+}
+
+.table-hover tbody tr:hover {
+    color: #495057;
+    background-color: rgba(0, 0, 0, 0.075);
+}
+
+.table-bordered {
+    border: 1px solid #dee2e6;
+}
+
+.table-bordered th,
+.table-bordered td {
+    border: 1px solid #dee2e6;
+}
+
+.thead-dark th {
+    color: #fff;
+    background-color: #343a40;
+    border-color: #454d55;
+}
 </style>
--->

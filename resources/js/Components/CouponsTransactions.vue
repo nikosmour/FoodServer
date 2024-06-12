@@ -39,27 +39,17 @@ export default {
             );
         },
         calculateMoney(amount, transaction) {
-            // Implement logic to format money (e.g., using a library)
-            // console.log(transaction);
-            if (transaction == 'buying')
+            if (transaction === 'buying' || transaction === 'sending')
                 this.temp.money += amount;
-            else if (transaction == 'sending')
-                this.temp.money += amount;
-            else if (transaction == 'receiving')
+            else if (transaction === 'receiving')
                 this.temp.money -= amount;
             return this.temp.money;
         },
         calculateMeal(amount, transaction, meal) {
-            // Implement logic to format money (e.g., using a library)
-            // console.log(transaction);
-            if (transaction == 'buying')
+            if (transaction === 'buying' || transaction === 'using')
                 this.temp[meal] -= amount;
-            else if (transaction == 'sending')
+            else if (transaction === 'sending' || transaction === 'receiving')
                 this.temp[meal] += amount;
-            else if (transaction == 'receiving')
-                this.temp[meal] -= amount;
-            else if (transaction == 'using')
-                this.temp[meal] += amount
             return this.temp[meal];
         },
         getMealValue(data, meal) {
@@ -75,8 +65,7 @@ export default {
                     transaction['total.' + meal] = this.calculateMeal(transaction[meal], transaction.transaction, meal);
                 }
                 transaction.totalMoney = this.calculateMoney(Number(transaction.money), transaction.transaction);
-                // transaction.created_at = new Date(transaction.created_at);
-            })
+            });
             return transactions;
         },
     },
@@ -88,39 +77,39 @@ export default {
 </script>
 
 <template>
-    <div v-if="transactions">
-        <table class="table text-center  table-hover table-col-to-row-sm caption-top">
-            <caption>{{ 'transactions' }}</caption>
+    <div v-if="transactions" class="table-responsive">
+        <table class="table table-striped table-hover text-center">
+            <caption>{{ $t('transactions') }}</caption>
             <thead class="thead-dark">
             <tr>
-                <th scope="col">{{ 'Category' }}</th>
-                <th scope="col">{{ 'Comments' }}</th>
-                <th scope="col">{{ 'Money' }}</th>
-                <th v-for="(value, meal) in $enums.MealPlanPeriodEnum" scope="col">{{ meal }}</th>
-                <th scope="col">{{ 'Date' }}</th>
+                <th scope="col">{{ $t('Category') }}</th>
+                <th scope="col">{{ $t('Comments') }}</th>
+                <th scope="col">{{ $t('Money') }}</th>
+                <th v-for="(value, meal) in $enums.MealPlanPeriodEnum" :key="meal" scope="col">{{ meal }}</th>
+                <th scope="col">{{ $t('Date') }}</th>
             </tr>
             </thead>
             <tbody>
-
             <tr v-for="transaction in transactions" :key="transaction.id">
                 <th scope="row">{{ transaction.transaction }}</th>
-                <td>{{ (transaction.money != 0) ? transaction.money + '€' : '' }}
+                <td>
+                    <span v-if="transaction.money != 0">{{ transaction.money }}€</span>
                     <template v-for="(value, meal) in $enums.MealPlanPeriodEnum">
                         &nbsp;{{ meal }}: {{ transaction[meal] }}
                     </template>
                     <template v-if="transaction.transaction === 'receiving'">
-                        &nbsp;{{ 'Sender' }}: {{ transaction.academic_id }}
+                        &nbsp;{{ $t('Sender') }}: {{ transaction.academic_id }}
                     </template>
                     <template v-else-if="transaction.transaction === 'sending'">
-                        &nbsp;{{ 'Receiver' }}: {{ transaction.academic_id }}
+                        &nbsp;{{ $t('Receiver') }}: {{ transaction.academic_id }}
                     </template>
                 </td>
                 <td>{{ transaction.totalMoney }} €</td>
                 <td v-for="(value, meal) in $enums.MealPlanPeriodEnum"
-                    :key='"transaction." +transaction.id +".meal."+ meal'>
+                    :key="'transaction.' + transaction.id + '.meal.' + meal">
                     {{ transaction['total.' + meal] }}
                 </td>
-                <td>{{ transaction.created_at }}</td>
+                <td>{{ new Date(transaction.created_at).toLocaleDateString() }}</td>
             </tr>
             </tbody>
         </table>
@@ -128,5 +117,7 @@ export default {
 </template>
 
 <style scoped>
-
+.table-responsive {
+    margin-top: 20px;
+}
 </style>

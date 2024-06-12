@@ -69,21 +69,19 @@ export default {
 }
 </script>
 
+<style scoped>
+</style>
+
 <template>
     <div>
         <nav-view/>
-        <main class="py-4  my_flex_height">
+        <main class="py-4 my_flex_height" role="main">
             <router-view class="container"/>
         </main>
-        <footer class="text-center ">
-            <div> © {{ "UNIVERSITY OF PATRAS" + ' ' + (new Date()).getFullYear() }}</div>
-            <div>{{ "Food Department" }}</div>
-            <!-- <img src= style="max-height: 100px" >-->
-            <img alt='logo' src="/img/big_logo_Upatras.png"/>
+        <footer class="text-center" role="contentinfo">
+            <div>© {{ "UNIVERSITY OF PATRAS" + ' ' + (new Date()).getFullYear() }}</div>
+            <div>Food Department</div>
+            <img alt="University of Patras Logo" src="/img/big_logo_Upatras.png"/>
         </footer>
     </div>
 </template>
-
-<style scoped>
-
-</style>
