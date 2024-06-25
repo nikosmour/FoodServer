@@ -2,9 +2,10 @@
 
 namespace App\Rules;
 
-use Illuminate\Contracts\Validation\DataAwareRule;
 use Closure;
+use Illuminate\Contracts\Validation\DataAwareRule;
 use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Translation\PotentiallyTranslatedString;
 
 class AtLeastOneNoZero implements ValidationRule, DataAwareRule
 {
@@ -38,13 +39,13 @@ class AtLeastOneNoZero implements ValidationRule, DataAwareRule
     /**
      * Run the validation rule.
      *
-     * @param \Closure(string): \Illuminate\Translation\PotentiallyTranslatedString $fail
+     * @param Closure(string): PotentiallyTranslatedString $fail
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         foreach ($this->params as $param)
             if (0 < $this->data[$param])
                 return;
-        $fail('All values are 0');
+        $fail(__('validation.utlist_one_greater_than_zero'));
     }
 }

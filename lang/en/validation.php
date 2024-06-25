@@ -128,6 +128,18 @@ return [
     'uploaded' => 'The :attribute failed to upload.',
     'url' => 'The :attribute must be a valid URL.',
     'uuid' => 'The :attribute must be a valid UUID.',
+    /*
+    |--------------------------------------------------------------------------
+    | Custom Validation Language Lines
+    |--------------------------------------------------------------------------
+    |
+    | Here you may specify custom validation messages for custom errors
+    |
+    */
+
+
+    'not_active' => 'The selected :attribute  belong to a not active user.',
+    'utlist_one_greater_than_zero' => 'One of the values must be greater than 0',
 
     /*
     |--------------------------------------------------------------------------
@@ -157,6 +169,8 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        'receiver_id' => 'receiver id'
+    ],
 
 ];

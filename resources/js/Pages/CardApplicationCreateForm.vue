@@ -1,6 +1,6 @@
 <template>
     <div>
-        <models-to-table :aria-label="$t('user.information')" :caption="$t('user.value')" :models="[currentUser]"/>
+        <card-applicant-info :aria-label="$t('user.information')" :caption="$t('user.value')" :model="currentUser"/>
         <form id="accept-form" aria-label="Accept Form" method="POST" @submit.prevent="createApplication">
             <button aria-label="Accept" class="btn btn-primary">{{ $t('accept') }}</button>
         </form>
@@ -13,12 +13,12 @@
 import {mapGetters} from 'vuex';
 import ModelsToTable from "../Components/modelsToTable.vue";
 import Message from "../Components/Message.vue";
+import CardApplicantInfo from "../Components/cardApplicantInfo.vue";
 
 export default {
-    components: {Message, ModelsToTable},
+    components: {CardApplicantInfo, Message, ModelsToTable},
     data: function () {
         return {
-            academic_id: '',
             url: route('cardApplication.store'),
             result: {
                 message: this.$t('test.Message'),
@@ -36,7 +36,7 @@ export default {
     },
     methods: {
         createApplication() {
-            if (0 === this.academic_id) return;
+            if (0 === this.currentUser.academic_id) return;
             this.result.message = '';
             axios.post(this.url).then(responseJson => {
                 let json = responseJson.data;
