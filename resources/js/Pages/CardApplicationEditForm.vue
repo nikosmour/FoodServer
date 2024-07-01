@@ -1,6 +1,10 @@
 <template>
     <!-- Vue component template -->
-    <div>
+    <div v-if="!cardApplication">
+        <loading/>
+        <message v-bind="result"></message>
+    </div>
+    <div v-else>
         <!-- Display application status and expiration date -->
         <p>{{ $t('applicationStatus') }} : {{ $t(status) + ' ' + $t('and') + ' ' + $t('expiration date') }} : {{
                 expiration_date
@@ -113,13 +117,13 @@ export default {
         },
         // Method to fetch initial data
         startingData() {
-            this.getApplication();
+            this.getApplication()
         },
         // Method to fetch card application data
         getApplication() {
             let url = route('cardApplication.index');
             console.log('getApplication');
-            axios.get(url
+            return axios.get(url
             ).then(responseJson => {
                 let json = responseJson['data'];
                 this.cardApplication = json['cardApplication'];

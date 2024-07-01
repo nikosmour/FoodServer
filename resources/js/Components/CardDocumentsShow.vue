@@ -83,7 +83,7 @@ export default {
                             'document': file.id
                         }));
                     });
-                    if (0 == json.length)
+                    if (0 == json.length && this.applicationEdit)
                         vue.addFileUpload();
                     console.log(vue.files);
                 })

@@ -1,6 +1,7 @@
 <template>
-    <div>
-        <card-applicant-info :aria-label="$t('user.information')" :caption="$t('user.value')" :model="currentUser"/>
+    <loading v-if="!user"/>
+    <div v-else>
+        <card-applicant-info :aria-label="$t('user.information')" :caption="$t('user.value')" :model="user"/>
         <form id="accept-form" aria-label="Accept Form" method="POST" @submit.prevent="createApplication">
             <button aria-label="Accept" class="btn btn-primary">{{ $t('accept') }}</button>
         </form>
@@ -11,12 +12,8 @@
 
 <script>
 import {mapGetters} from 'vuex';
-import ModelsToTable from "../Components/modelsToTable.vue";
-import Message from "../Components/Message.vue";
-import CardApplicantInfo from "../Components/cardApplicantInfo.vue";
 
 export default {
-    components: {CardApplicantInfo, Message, ModelsToTable},
     data: function () {
         return {
             url: route('cardApplication.store'),
@@ -33,6 +30,14 @@ export default {
         ...mapGetters([
             'currentUser',
         ]),
+        user: function () {
+
+            return this.currentUser ? {
+                ...this.currentUser,
+                address: this.currentUser.card_applicant.address,
+                academic: this.currentUser
+            } : null;
+        }
     },
     methods: {
         createApplication() {
