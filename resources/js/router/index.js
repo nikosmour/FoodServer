@@ -1,21 +1,21 @@
 import {createRouter, createWebHashHistory} from 'vue-router'
-import authGuard from "./guards/AuthGuard";
-import {Enums} from "./enums";
+import authGuard from "../guards/AuthGuard";
+import {Enums} from "../plugins/enums.js";
 
-const Unauthorized = () => import('./Pages/Errors/403.vue');
-const NotFound = () => import('./Pages/Errors/404.vue')
-const PurchaseCoupon = () => import('./Pages/PurchaseCoupon.vue');
-const EntryChecking = () => import('./Pages/EntryChecking.vue');
-const Login = () => import('./Pages/Auth/Login.vue');
-const UserProfile = () => import("./Pages/UserProfile.vue");
-const CardApplicationChecking = () => import("./Pages/CardApplicationChecking.vue");
-const CardApplication = () => import("./Pages/CardApplicationEditForm.vue");
-const CardApplicationCreate = () => import("./Pages/CardApplicationCreateForm.vue");
-const Transactions = () => import("./Pages/Transactions.vue");
-const TransferCoupons = () => import("./Pages/TransferCoupon.vue");
-const CouponOwner = () => import("./Pages/CouponOwner.vue");
-const CouponTransactions = () => import("./Components/CouponsTransactions.vue")
-const CardApplicationCheckingSearch = () => import("./Components/CardApplicationCheckingSearch.vue")
+const Unauthorized = () => import('../Pages/Errors/403.vue');
+const NotFound = () => import('../Pages/Errors/404.vue')
+const PurchaseCoupon = () => import('../Pages/PurchaseCoupon.vue');
+const EntryChecking = () => import('../Pages/EntryChecking.vue');
+const Login = () => import('../Pages/Auth/Login.vue');
+const UserProfile = () => import("../Pages/UserProfile.vue");
+const CardApplicationChecking = () => import("../Pages/CardApplicationChecking.vue");
+const CardApplication = () => import("../Pages/CardApplicationEditForm.vue");
+const CardApplicationCreate = () => import("../Pages/CardApplicationCreateForm.vue");
+const Transactions = () => import("../Pages/Transactions.vue");
+const TransferCoupons = () => import("../Pages/TransferCoupon.vue");
+const CouponOwner = () => import("../Pages/CouponOwner.vue");
+const CouponTransactions = () => import("../Components/CouponsTransactions.vue")
+const CardApplicationCheckingSearch = () => import("../Components/CardApplicationCheckingSearch.vue")
 
 const routes = [
     {

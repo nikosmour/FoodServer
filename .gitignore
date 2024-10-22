@@ -4,8 +4,8 @@
 /public/img
 /public/js
 /public/css
-/resources/js/enums.js
-/resources/js/ziggy.js
+/resources/js/plugins/enums.js
+/resources/js/plugins/ziggy.js
 /storage/*.key
 /vendor
 .env
@@ -23,3 +23,4 @@ yarn-error.log
 /.vscode
 READMElaravel.md
 /routes/test.php
+/public/build/

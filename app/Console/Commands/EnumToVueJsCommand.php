@@ -59,7 +59,7 @@ class EnumToVueJsCommand extends Command
         }
 
         // Write JSON to Vue.js file
-        $vueFile = resource_path('js/enums.js');
+        $vueFile = resource_path('js/plugins/enums.js');
         $content = "
 export const Enums = $json
 export const EnumPlugin = {

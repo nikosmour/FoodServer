@@ -1,7 +1,15 @@
 <script>
 import {mapActions, mapGetters} from "vuex";
+import NavView from "./navView.vue";
 
 export default {
+    components: {NavView},
+    data() {
+        return {
+            imageUrl: '/img/big_logo_Upatras.png'
+        };
+    },
+
     computed: {
         ...mapGetters([
             'isAuthenticated',
@@ -36,7 +44,7 @@ export default {
         this.redirectAuth(this.isAuthenticated);
         //console.log('mounted',this.$route,this.$router.resolve(this.$route.fullPath).fullPath,Date());
         // console.log('mounted',this.$route);
-        let timeoutMin = process.env.MIX_SESSION_TIME_OUT;
+        let timeoutMin = import.meta.env.VITE_SESSION_TIME_OUT;
         let timeout = (timeoutMin - 1) * 60000
         //console.log('App.vue/mounted/timeout',timeout)
         if (timeoutMin < 2)
@@ -92,6 +100,6 @@ export default {
     <footer class="text-center" role="contentinfo">
         <div>© {{ $t('company.name').toUpperCase() + ' ' + (new Date()).getFullYear() }}</div>
         <div> {{ $t('company.department').toUpperCase() }}</div>
-        <img alt="{{$t('logo') +' '+$t('company.name')}}" src="/img/big_logo_Upatras.png"/>
+        <img :src="imageUrl" alt="{{$t('logo') +' '+$t('company.name')}}"/>
     </footer>
 </template>

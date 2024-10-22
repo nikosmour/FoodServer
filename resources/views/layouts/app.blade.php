@@ -13,7 +13,6 @@
     </title>
     {{--    @routes--}}
     <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}" defer></script>
     <script> window.isAuthenticated = {!! (auth()->check())? 1 : 0!!}</script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
@@ -22,7 +21,8 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
     <link rel="icon" href="{{asset('/img/logo_Upatras.png')}}" type="image/x-icon">
     <!-- Styles -->
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    @vite(['resources/js/app.js','resources/sass/app.scss'])  <!--'resources/css/app.css'])-->
+    {{--    <link href="{{ asset('css/app.css') }}" rel="stylesheet">--}}
     @yield('Styles')
 </head>
 <body>
