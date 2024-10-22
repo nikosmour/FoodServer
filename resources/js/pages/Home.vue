@@ -23,7 +23,7 @@
 export default {
     methods: {
         login() {
-            window.location.href = '/api/saml2/login';
+            window.location.href = 'saml2/auth/login';
         }
     }
 };
