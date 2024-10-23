@@ -19,7 +19,7 @@ export default {
         },
     },*/
     methods: {
-        ...mapActions([
+        ...mapActions('auth', [
             'getUser'
         ]),
         fetchData() {

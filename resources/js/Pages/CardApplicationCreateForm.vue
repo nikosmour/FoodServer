@@ -27,7 +27,7 @@ export default {
     },
 
     computed: {
-        ...mapGetters([
+        ...mapGetters('auth', [
             'currentUser',
         ]),
         user: function () {

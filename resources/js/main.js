@@ -6,14 +6,13 @@
 import './bootstrap';
 import {createApp} from 'vue';
 import router from './router';
-import App from './Pages/App.vue';
-import store from './store/auth';
+import App from './pages/App.vue';
+import store from './store';
+import {plugins} from './plugins';
 import {route} from '../../vendor/tightenco/ziggy';
-import vuetify from './plugins/vuetify';
-import {FiltersPlugin} from './plugins/filters.js';
 import {Ziggy} from './plugins/ziggy.js';
-import {EnumPlugin} from './plugins/enums.js';
-import i18n from './plugins/i18n.js';
+
+
 // import {ZiggyVue} from '../../vendor/tightenco/ziggy';
 
 /**
@@ -24,7 +23,7 @@ import i18n from './plugins/i18n.js';
 let promise = null;
 console.log(Date.now() % 10000, 'after')
 if (window.isAuthenticated) {
-    promise = store.dispatch('getUser');
+    promise = store.dispatch('auth/getUser');
     console.log(Date.now() % 10000, 'dispatch get User');
 }
 
@@ -58,20 +57,12 @@ for (const [fileName, component] of Object.entries(requireComponent)) {
 }
 
 // Use any plugins
-app.use(i18n);
-app.use(EnumPlugin);
+app.use(plugins);
 app.use(store);
-app.use(FiltersPlugin);
-app.use(vuetify);
 
 // app.use(ZiggyVue)//,Ziggy);
 window.route = route;
 window.Ziggy = Ziggy;
-app.mixin({
-    methods: {
-        route: (name, params, absolute) => route(name, params, absolute, Ziggy),
-    }
-});
 
 /**
  * The following block will waiting  the request to the server to

@@ -15,8 +15,8 @@ const getPreferredLocale = () => {
     return 'en'; // Default to English if no match
 };
 
-// Create the i18n instance
-const i18n = createI18n({
+// Create the I18n instance
+const I18n = createI18n({
     locale: getPreferredLocale(), // set locale
     fallbackLocale: 'en', // set fallback locale
     messages: {
@@ -31,4 +31,4 @@ const i18n = createI18n({
     }
 });
 
-export default i18n; // Export the i18n instance for use in the Vue app
+export default I18n; // Export the I18n instance for use in the Vue app

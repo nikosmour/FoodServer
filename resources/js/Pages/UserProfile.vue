@@ -12,7 +12,7 @@ import ModelsToTable from "../Components/modelsToTable.vue";
 export default {
     components: {ModelsToTable},
     computed: {
-        ...mapGetters([
+        ...mapGetters('auth', [
             'currentUser',
         ]),
     },

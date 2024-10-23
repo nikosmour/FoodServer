@@ -21,7 +21,7 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
     <link rel="icon" href="{{asset('/img/logo_Upatras.png')}}" type="image/x-icon">
     <!-- Styles -->
-    @vite(['resources/js/app.js','resources/sass/app.scss'])  <!--'resources/css/app.css'])-->
+    @vite(['resources/js/main.js','resources/sass/app.scss'])  <!--'resources/css/app.css'])-->
     {{--    <link href="{{ asset('css/app.css') }}" rel="stylesheet">--}}
     @yield('Styles')
 </head>

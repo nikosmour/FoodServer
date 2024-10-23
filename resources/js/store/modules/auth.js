@@ -1,20 +1,18 @@
-import Vuex from 'vuex';
 
 export const state = {
-    auth: { // Add the auth property here
         isLoggedIn: false,
         user: null,
-    },
+    abilities: null,
 };
 
 export const mutations = {
     setLogin(state, payload) {
-        state.auth.user = payload.user;
-        state.auth.abilities = payload.abilities;
+        state.user = payload.user;
+        state.abilities = payload.abilities;
     },
     setLogout(state) {
-        state.auth.user = null;
-        state.auth.abilities = null;
+        state.user = null;
+        state.abilities = null;
     },
 };
 
@@ -61,21 +59,24 @@ export const actions = {
 
 export const getters = {
     isAuthenticated(state) {
-        return state.auth.user != null;
+        console.log('auth/isAuthenticated', state);
+        return state.user != null;
     },
     currentUser(state) {
-        return state.auth.user;
+        return state.user;
     },
     hasAbility(state) {
         return (ability) => {
-            return state.auth.user && state.auth.abilities.includes(ability);
+            console.log('auth/hasAbility', state);
+            return state.user && state.abilities.includes(ability);
         };
     },
 
 };
-export default new Vuex.Store({
+export default {
+    namespaced: true, // Use namespacing for modularity
     state,
     mutations,
     actions,
     getters,
-});
+};

@@ -11,12 +11,12 @@ export default {
     },
 
     computed: {
-        ...mapGetters([
+        ...mapGetters('auth', [
             'isAuthenticated',
         ]),
     },
     methods: {
-        ...mapActions([
+        ...mapActions('auth', [
             'getUser'
         ]),
         redirectAuth(isAuthenticated) {
@@ -76,7 +76,7 @@ export default {
                         });
                     // Unauthenticated
                 } else if (error.response.status === 401) {
-                    this.$store.commit('setLogout');
+                    this.$store.commit('auth/setLogout');
                     return Promise.reject(error);
                     // unauthorized
                 } else if (error.response.status === 403) {

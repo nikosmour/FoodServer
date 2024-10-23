@@ -89,7 +89,7 @@ export default {
 
                 // 4. Handle successful login
                 this.isLoading = true;
-                await this.$store.dispatch('loginUser', this.formData)
+                await this.$store.dispatch('auth/loginUser', this.formData)
                 console.log('Login successful! login as ', this.$store.state.auth.user, this.$store.state.auth.isLoggedIn);
             } catch (errors) {
                 // 6. Handle network or other error
@@ -109,7 +109,7 @@ export default {
 
     },
     computed: {
-        ...mapGetters([
+        ...mapGetters('auth', [
             'isAuthenticated',
         ]),
     },

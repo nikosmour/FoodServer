@@ -118,7 +118,7 @@ import {mapActions, mapGetters} from "vuex";
 export default {
     name: "NavView",
     computed: {
-        ...mapGetters([
+        ...mapGetters('auth', [
             'isAuthenticated',
             'currentUser',
             'hasAbility',
@@ -134,9 +134,9 @@ export default {
     },
     methods: {
         // Mapping actions from Vuex store
-        ...mapActions({
-            logout: 'logout',
-        }),
+        ...mapActions('auth', [
+            'logout',
+        ]),
     },
     watch: {
         '$route.name'(newValue) {
